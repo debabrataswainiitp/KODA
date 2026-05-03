@@ -20,9 +20,9 @@ try {
             product_data:{
               name:`Koda.ai ${planType.toUpperCase()} plan`  
             },
-            unit_amount:plan.price*1
+            unit_amount:plan.price*100
         },
-        quantity:100
+        quantity:1
       }  
     ],
 
