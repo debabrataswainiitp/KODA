@@ -75,7 +75,7 @@ function Home() {
                 initial={{ y: -40, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 1 }}
-                className='fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-/40 border-b border-white/10'
+                className='fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-black/40 border-b border-white/10'
             >
                 <div className='max-w-7xl mx-auto px-6 py-4 flex justify-between items-center'>
 
@@ -169,7 +169,7 @@ function Home() {
                     initial={{ opacity: 0, y: 40 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{duration:0.75}}
-                    className="'mt-10 px-8 py-4 rounded-lg bg-gradient-to-r from-violet-600 to-pink-600 text-white text-lg font-semibold hover:from-violet-700 hover:to-pink-700 transition-all duration-400 shadow-lg shadow-violet-900/40 cursor-pointer" onClick={() =>userData? navigate("/dashboard"):setOpenLogin(true)}>{userData ? "Dashboard" : "Get Started"}</motion.button>
+                    className="mt-10 px-8 py-4 rounded-lg bg-gradient-to-r from-violet-600 to-pink-600 text-white text-lg font-semibold hover:from-violet-700 hover:to-pink-700 transition-all duration-400 shadow-lg shadow-violet-900/40 cursor-pointer" onClick={() =>userData? navigate("/dashboard"):setOpenLogin(true)}>{userData ? "Dashboard" : "Get Started"}</motion.button>
 
                 
             {/* Highlights Section */}
