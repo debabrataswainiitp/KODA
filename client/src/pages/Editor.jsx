@@ -10,18 +10,18 @@ import { AnimatePresence, motion } from 'motion/react'
 
 import Editor from '@monaco-editor/react';
 function WebsiteEditor() {
-    const { id } = useParams()//✅
-    const [website, setWebsite] = useState(null)//✅
-    const [error, setError] = useState("")//✅
-    const [code, setCode] = useState("")//✅
-    const [messages, setMessages] = useState([])//✅
-    const [prompt, setPrompt] = useState("")//✅
-    const iframeRef = useRef(null)//✅
-    const [updateLoading, setUpdateLoading] = useState(false)//✅
-    const [thinkingIndex, setThinkingIndex] = useState(0)//✅
-    const [showCode, setShowCode] = useState(false)//✅
-    const [showFullPreview, setShowFullPreview] = useState(false)//✅
-    const [showChat, setShowChat] = useState(false)//✅
+    const { id } = useParams()
+    const [website, setWebsite] = useState(null)
+    const [error, setError] = useState("")
+    const [code, setCode] = useState("")
+    const [messages, setMessages] = useState([])
+    const [prompt, setPrompt] = useState("")
+    const iframeRef = useRef(null)
+    const [updateLoading, setUpdateLoading] = useState(false)
+    const [thinkingIndex, setThinkingIndex] = useState(0)
+    const [showCode, setShowCode] = useState(false)
+    const [showFullPreview, setShowFullPreview] = useState(false)
+    const [showChat, setShowChat] = useState(false)
     const thinkingSteps = [
         "Understanding your request…",
         "Planning layout changes…",
@@ -30,14 +30,14 @@ function WebsiteEditor() {
         "Getting Trial Response",
         "Improving responsiveness…",
         "Applying animations…",
-        "Finalizing update…",//✅
+        "Finalizing update…",
     ]
     const handleUpdate = async () => {
         if (!prompt) return
         setUpdateLoading(true)
         const text = prompt
         setPrompt("")// TO MAKE INPUT BOX EMPTY AFTER PROMPT
-        setMessages((m) => [...m, { role: "user", content: prompt }])//sending user msg at first
+        setMessages((m) => [...m, { role: "user", content: prompt }])
         try {
             const result = await axios.post(`${serverUrl}/api/website/update/${id}`, { prompt: text }, { withCredentials: true })
             console.log(result)
@@ -82,30 +82,30 @@ function WebsiteEditor() {
                 setError(error.response.data.message)
             }
         }
-        handleGetWebsite()//✅
+        handleGetWebsite()
     }, [id])
 
 
     useEffect(() => {
         if (!iframeRef.current || !code) return;
-        const blob = new Blob([code], { type: "text/html" })//blob is a filelike immutable object aldo we can read it as text or binary dataa
+        const blob = new Blob([code], { type: "text/html" })//blob is a filelike immutable object also we can read it as text or binary dataa
         const url = URL.createObjectURL(blob)
-        iframeRef.current.src = url //Here we are actually converting the code we got to an url so that we can use it in iframe to show code preview
+        iframeRef.current.src = url
         return () => URL.revokeObjectURL(url)
-    }, [code])//Using iframe to Show Code✅
+    }, [code])
 
     if (error) {
         return (
             <div className='h-screen flex items-center justify-center bg-black text-red-400'>
                 {error}
-            </div>//✅
+            </div>
         )
     }
     if (!website) {
         return (
             <div className='h-screen flex items-center justify-center bg-black text-white'>
                 Loading...
-            </div>//✅
+            </div>
         )
     }
 
@@ -126,7 +126,7 @@ function WebsiteEditor() {
 
                                 <div
                                     className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${m.role === "user"
-                                        ? "bg-white text-black"
+                                        ? "linear-to-br from-violet-600 to-pink-600 text-white"
                                         : "bg-white/5 border border-white/10 text-zinc-200"
                                         }`}
                                 >
@@ -162,14 +162,14 @@ function WebsiteEditor() {
                 <div className='h-14 px-4 flex justify-between items-center border-b border-white/10 bg-black/80'>
                     <span className='text-xs text-zinc-300'>Live Preview</span>
                     <div className='flex gap-2'>
-                        {website.deployed ?"": <button className='flex items-center gap-2 px-4 py-1.5 rounded-lg bg-linear-to-br from-blue-500 via-indigo-500 to-purple-500 text-sm font-semibold hover:scale-107 transition-all duration-400  '
+                        {website.deployed ?"": <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-linear-to-br from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 text-sm font-semibold hover:scale-107 shadow-lg shadow-violet-900/30 transition-all duration-400"
                         onClick={handleDeploy}
                         ><Rocket size={14} /> Deploy</button>}
                        
                         <button className='p-2 lg:hidden' onClick={() => setShowChat(true)}><MessageSquare size={18} /></button>
 
-                        <button className='p-2' onClick={() => setShowCode(true)}><Code2 size={21} color='yellow' /></button>
-                        <button className='p-2' onClick={() => setShowFullPreview(true)}><MonitorPlay color='violet' size={21} /></button>
+                        <button className='p-2' onClick={() => setShowCode(true)}><Code2 size={21} color='purple' /></button>
+                        <button className='p-2' onClick={() => setShowFullPreview(true)}><MonitorPlay color='purple' size={21} /></button>
                     </div>
 
                 </div>
@@ -183,7 +183,7 @@ function WebsiteEditor() {
                         initial={{ y: "100%" }}
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
-                        className="fixed inset-0 z-[9999] bg-black flex flex-col"
+                        className="fixed inset-0 z-[9999] bg-black border-l border-white/10 flex flex-col"
                     >
                    <Header onclose={()=>setShowChat(false)}/>
                    <>
@@ -197,7 +197,7 @@ function WebsiteEditor() {
 
                                 <div
                                     className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${m.role === "user"
-                                        ? "bg-white text-black"
+                                        ? "linear-to-br from-violet-600 to-pink-600 text-white"
                                         : "bg-white/5 border border-white/10 text-zinc-200"
                                         }`}
                                 >
@@ -249,7 +249,7 @@ function WebsiteEditor() {
                             theme='vs-dark'
                             value={code}
                             language='html'
-                            onChange={(v) => setCode(v)}//used so that if we change something in preview code , then the root code will be changed for that file
+                            onChange={(v) => setCode(v)}
                         />
 
                     </motion.div>
@@ -280,7 +280,7 @@ function WebsiteEditor() {
             </div>
         )
     }
-//✅
+
 
 
 }
