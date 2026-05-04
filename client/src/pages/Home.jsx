@@ -11,9 +11,9 @@ import { useNavigate } from 'react-router-dom'    //imported all required packag
 function Home() {
 
     const highlights = [
-        "AI Generated Code",
-        "User Friendly Layouts",
-        "Ready to Ship Output",
+        "AI Powered Code",
+        "Intuitive User Interface",
+        "Fully Responsive Layouts",
     ]
     const cardAccents = [
     'from-violet-600 to-violet-400',
@@ -150,7 +150,7 @@ function Home() {
                     transition={{duration:0.75}}
                     className="text-5xl md:text-7xl font-bold tracking-tight"
                 >
-                    Unleash Your Creativity With<br />
+                    Unleash Your Creativity with<br />
                     <span className='bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400'>KODA.AI</span> <br />
                     
                 </motion.h1>
@@ -187,8 +187,8 @@ function Home() {
                             className="relative rounded-2xl bg-white/5 border border-white/10 p-8 overflow-hidden"
                         >
                             <div className={`absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r ${cardAccents[i]}`} />
-                            <h1 className='text-2xl font-semibold mb-4'>{h}</h1>
-                            <p className='text-xl text-center text-zinc-400'> 
+                            <h1 className='text-xl font-semibold mb-3'>{h}</h1>
+                            <p className='text-sm text-zinc-600 leading-relaxed'> 
                                 Koda.AI harnesses the power of artificial intelligence to generate website designs and layouts. Whether you're a developer looking for coding assistance or a designer seeking inspiration, Koda.AI has got you covered.
                             </p>
 
@@ -238,7 +238,7 @@ function Home() {
                 {/* divider glow */}
                 <div className='absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent' />
                 &copy; {new Date().getFullYear()} KODA.AI | All rights reserved.<br/>
-                 <span className='bg-linear-to-r from-purple-300 via-pink-300 to-cyan-300 bg-clip-text text-transparent '>Made with ❤️ by IITians</span>
+                 <span className='bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent '>Made with ❤️ by IITians</span>
             </footer>
 
             {openLogin && <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />}
