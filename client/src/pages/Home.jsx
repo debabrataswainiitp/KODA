@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect,useRef , useState } from 'react'
 import { AnimatePresence, motion } from "motion/react"
 import LoginModal from '../components/LoginModal'
 import { useDispatch, useSelector } from 'react-redux'
