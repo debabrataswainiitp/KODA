@@ -119,11 +119,7 @@ function Dashboard() {
                                     </p>
 
                                     {!w.deployed ? (
-                                        <button className=" mt-auto flex items-center justify-center gap-2
-                          px-4 py-2 rounded-xl text-sm font-semibold
-                          bg-linear-to-r from-blue-500 via-cyan-600 to-purple-500
-                          hover:scale-105 transition
-                        "
+                                        <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-linear-to-br from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 text-sm font-semibold hover:scale-107 shadow-lg shadow-violet-900/30 transition-all duration-400"
                                             onClick={() => handleDeploy(w._id)}
 
                                         ><Rocket size={18} /> Deploy</button>
