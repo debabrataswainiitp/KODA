@@ -126,7 +126,7 @@ function WebsiteEditor() {
 
                                 <div
                                     className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${m.role === "user"
-                                        ? "linear-to-br from-violet-600 to-pink-600 text-white"
+                                        ? "bg-gradient-to-br from-violet-600 to-pink-600 text-white border border-white/10"
                                         : "bg-white/5 border border-white/10 text-zinc-200"
                                         }`}
                                 >
@@ -197,7 +197,7 @@ function WebsiteEditor() {
 
                                 <div
                                     className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${m.role === "user"
-                                        ? "linear-to-br from-violet-600 to-pink-600 text-white"
+                                        ? "bg-gradient-to-br from-violet-600 to-pink-600 text-white border border-white/10"
                                         : "bg-white/5 border border-white/10 text-zinc-200"
                                         }`}
                                 >
