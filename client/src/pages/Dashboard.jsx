@@ -52,15 +52,21 @@ function Dashboard() {
     }
 
     return (
-        <div className='min-h-screen bg-[#050505] text-white'>
+        <div className='relative min-h-screen bg-[#040404] text-white overflow-hidden'>
+            
+            <div className='absolute -top-32 -left-24 w-[500px] h-[500px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none' />
+            <div className='absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full bg-pink-600/10 blur-[100px] pointer-events-none' />
+            <div className='absolute top-[340px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-violet-600/[0.08] blur-[100px] pointer-events-none' />
+
+            
             <div className='sticky top-0 z-40 backdrop-blur-xl bg-black/50 border-b border-white/10'>
                 <div className='max-w-7xl mx-auto px-6 h-16 flex items-center justify-between'>
-                    <div className='flex items-center gap-4'>
+                    <div className='flex items-center gap-3'>
                         <button className='p-2 rounded-lg hover:bg-white/10 transition' onClick={() => navigate("/")}><ArrowLeft size={16} /></button>
-                        <h1 className='text-lg font-semibold'>Dashboard</h1>
+                        <h1 className='text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent'>Dashboard</h1>
                     </div>
                     <button className='px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:scale-105 hover:bg-fuchsia-400/70 transition duration-300' onClick={() => navigate("/generate")}>
-                        + New Website
+                        + New Project
                     </button>
                 </div>
             </div>
@@ -70,7 +76,7 @@ function Dashboard() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-10"
                 >
-                    <p className='text-l text-cyan-400 mb-1 '>Welcome Back</p>
+                    <p className='text-l text-indigo-400 mb-1 '>Welcome Back</p>
                     <h1 className='text-3xl font-bold'>{userData.name}</h1> 
                 </motion.div>
 
@@ -83,7 +89,7 @@ function Dashboard() {
                 )}
 
                 {websites?.length == 0 && (
-                    <div className="mt-24 text-center text-zinc-400">You have no websites</div>
+                    <div className="mt-24 text-center text-zinc-400">You have projects yet. Clink "New Project" to create your first one.</div>
                 )}
 
                 {!loading && !error && websites?.length > 0 && (
