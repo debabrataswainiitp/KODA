@@ -99,8 +99,8 @@ try {
                 className="relative z-10 max-w-4xl mx-auto text-center mb-14"
                 transition={{ duration: 0.5 }}
             >
-                <h1 className='text-4xl md:text-5xl font-bold mb-4'> Simple, transparent pricing</h1>
-                <p className='text-zinc-400 text-lg'> Buy credits once. Build with no Nuisance.</p>
+                <h1 className='text-3xl md:text-3xl font-bold tracking-[0.3em] uppercase bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4'>Fuel your ideas with every credit.</h1>
+                <p className='text-base font-medium tracking-widest text-white/60 [text-shadow:0_0_20px_rgba(139,92,246,0.5)]'>Buy credits once. Build anytime.</p>
             </motion.div>
 
             <div className='relative z-10 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8'>
