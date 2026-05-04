@@ -109,9 +109,9 @@ try {
                         key={i}
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        transition={{ duration:0 }}
+                        transition={{ duration:0, ease: "easeOut" }}
                         //transition={{ delay: i * 0.12 }}
-                        whileHover={{ y: -14, scale: 1.05 }}
+                        whileHover={{ y: -14, scale: 1.05, transition: { duration: 0.15, ease: "easeOut" }}}
                         
                         className={`relative rounded-3xl p-8 border backdrop-blur-xl transition-all
               ${p.popular
