@@ -12,7 +12,7 @@ const PHASES = [
     "Writing HTML & CSS…",
     "Adding animations & interactions…",
     "Final quality checks…",
-];\
+];
 
 function Generate() {
     const navigate = useNavigate()
