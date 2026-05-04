@@ -12,7 +12,8 @@ const PHASES = [
     "Writing HTML & CSS…",
     "Adding animations & interactions…",
     "Final quality checks…",
-];
+];\
+
 function Generate() {
     const navigate = useNavigate()
     const [prompt, setPrompt] = useState("")
@@ -20,6 +21,8 @@ function Generate() {
     const [progress, setProgress] = useState(0)
     const [phaseIndex, setPhaseIndex] = useState(0)
     const [error,setError]=useState("")
+
+    
     const handleGenerateWebsite = async () => {
         setLoading(true)
         try {
@@ -49,15 +52,13 @@ function Generate() {
             const increment = value < 20 //if progrss less than 20
                 ? Math.random() * 1.5
                 : value < 60
-                    ? Math.random() * 1.2
-                    : Math.random() * 0.6;
+                ? Math.random() * 1.2
+                : Math.random() * 0.6;
             value += increment
 
-            if (value >= 93) value = 93; //FOR PROGRESS BAR
+            if (value >= 93) value = 93;
 
-            phase = Math.min(
-                Math.floor((value / 100) * PHASES.length), PHASES.length - 1
-            )//FOR WORD PHASES
+            phase = Math.min(Math.floor((value / 100) * PHASES.length), PHASES.length - 1)
 
             setProgress(Math.floor(value))
             setPhaseIndex(phase)
@@ -68,18 +69,25 @@ function Generate() {
     }, [loading])
 
     return (
-        <div className='min-h-screen bg-linear-to-br from-[#050505] via-[#1f1c1c] to-[#050505] text-white'>
-            <div className='sticky top-0 z-40 backdrop-blur-xl bg-black/50 border-b border-white/10'>
-                <div className='max-w-7xl mx-auto px-6 h-16 flex items-center justify-between'>
-                    <div className='flex items-center gap-4'>
-                        <button className='p-2 rounded-lg hover:bg-white/10 transition' onClick={() => navigate("/")}><ArrowLeft size={16} /></button>
-                        <h1 className='text-lg font-semibold'>Koda<span className='text-zinc-400'>.ai</span></h1>
-                    </div>
+        <div className='relative min-h-screen bg-[#040404] text-white overflow-hidden'>
 
+            {/* Ambient background glows — matching Home & Dashboard */}
+            <div className='absolute -top-32 -left-24 w-[500px] h-[500px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none' />
+            <div className='absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full bg-pink-600/10 blur-[100px] pointer-events-none' />
+            <div className='absolute top-[340px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-violet-600/[0.08] blur-[100px] pointer-events-none' />
+
+            {/* Navbar */}
+            <div className='sticky top-0 z-40 backdrop-blur-xl bg-black/50 border-b border-white/10'>
+                <div className='max-w-7xl mx-auto px-6 h-16 flex items-center'>
+                    <div className='flex items-center gap-3'>
+                        <button className='p-2 rounded-lg hover:bg-white/10 transition' onClick={() => navigate("/")}><ArrowLeft size={16} /></button>
+                        <h1 className='text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent'>KODA.AI</h1>
+                    </div>
                 </div>
             </div>
 
-            <div className='max-w-6xl mx-auto px-6 py-16'>
+            <div className='relative z-10 max-w-6xl mx-auto px-6 py-16'>
+                
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -87,49 +95,55 @@ function Generate() {
                     className="text-center mb-16"
                 >
                     <h1 className='text-4xl md:text-5xl font-bold mb-5 leading-tight'>
-                        Craft Your  Site Effortlessly 
-                        <span className='block bg-linear-to-r from-cyan-500 to-purple-500 bg-clip-text text-transparent'>With KODA Intelligence</span>
+                        Craft Your  Website with
+                        <span className='text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400'>KODA.AI</span>
                     </h1>
                     <p className='text-zinc-400 max-w-2xl mb-20 mx-auto'>
-                        This process may take several minutes.
-                        Thanks for your patience while <b> Koda.ai</b> Works its magic.
+                        This process may take a few moments as our AI crafts your unique digital masterpiece. Sit back, relax, and watch your vision come to life with KODA.AI .
                     </p>
-
                 </motion.div>
-                <div className='mb-22'>
-                    <h1 className='text-xl font-semibold mb-3'>Describe your website</h1>
+
+                {/* Prompt input */}
+                <motion.div
+                    initial={{ y: 30, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.35 }}
+                    className='mb-14'
+                    >
+                    <h2 className='px-3 text-xl font-semibold mb-4'>Describe your website:</h2>
                     <div className='relative'>
                         <textarea
                             onChange={(e) => setPrompt(e.target.value)}
                             value={prompt}
-                            placeholder='Describe your website idea in detailed way ...'
-                            className='w-full h-56 p-6 rounded-3xl bg-black/60 border border-white/20 outline-none resize-none text-sm leading-relaxed focus:ring-3 focus:ring-white/20'></textarea>
+                            placeholder='Describe your website idea in detail...'
+                            className='w-full h-56 p-6 rounded-3xl bg-black/60 border border-white/10 outline-none resize-none text-sm leading-relaxed focus:ring-2 focus:ring-violet-500/40 focus:border-violet-500/40 transition-all'></textarea>
                     </div>
-                    
-
                     {error && <p className='mt-4 text-sm text-red-400'>{error}</p>}
+                </motion.div>
 
-                </div>
+                {/* Generate button */}
                 <div className='flex justify-center'>
                     <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.96 }}
+                        whileHover={{ scale: prompt.trim() && !loading ? 1.05 : 1 }}
+                        whileTap={{ scale: prompt.trim() && !loading ? 0.95 : 1 }}
+                        transition={{ duration: 0.2 }}
                         onClick={handleGenerateWebsite}
-                        disabled={!prompt.trim() && loading} //disable when no prompt and loading on
+                        disabled={!prompt.trim() || loading}
                         className={`px-14 py-4 rounded-2xl font-semibold text-lg ${prompt.trim() && !loading
-                            ? "bg-white text-black"
-                            : "bg-white/20 text-zinc-400 cursor-not-allowed"
-                            }`}//changing colour
+                            ? "bg-gradient-to-r from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 text-white shadow-lg shadow-violet-900/40"
+                            : "bg-white/10 text-zinc-500 cursor-not-allowed"
+                            }`}
                     >
-                        Generate Website
+                        {loading ? "Generating..." : "Generate Website"}
                     </motion.button>
                 </div>
 
-
+                {/* Progress bar */}
                 {loading && (
                     <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
                         className="max-w-xl mx-auto mt-12"
                     >
                         <div className='flex justify-between mb-2 text-xs text-zinc-400'>
@@ -139,7 +153,7 @@ function Generate() {
 
                         <div className='h-2 w-full bg-white/10 rounded-full overflow-hidden'>
                             <motion.div
-                                className="h-full bg-linear-to-r from-white to-zinc-300"
+                                className="h-full bg-linear-to-r from-violet-500 to-pink-500"
                                 animate={{ width: `${progress}%` }}
                                 transition={{ ease: "easeOut", duration: 0.8 }}
                             />
