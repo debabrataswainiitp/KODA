@@ -65,7 +65,7 @@ function Dashboard() {
                         <button className='p-2 rounded-lg hover:bg-white/10 transition' onClick={() => navigate("/")}><ArrowLeft size={16} /></button>
                         <h1 className='text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent'>Dashboard</h1>
                     </div>
-                    <button className='px-4 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:scale-105 hover:bg-fuchsia-400/70 transition duration-300' onClick={() => navigate("/generate")}>
+                    <button className='px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-pink-600 text-white text-sm font-semibold hover:scale-105 hover:from-violet-700 hover:to-pink-700 transition duration-300 shadow-lg shadow-violet-900/40' onClick={() => navigate("/generate")}>
                         + New Project
                     </button>
                 </div>
@@ -76,7 +76,7 @@ function Dashboard() {
                     animate={{ opacity: 1, y: 0 }}
                     className="mb-10"
                 >
-                    <p className='text-l text-indigo-400 mb-1 '>Welcome Back</p>
+                    <p className='text-l text-zinc-400 mb-1 '>Welcome Back</p>
                     <h1 className='text-3xl font-bold'>{userData.name}</h1> 
                 </motion.div>
 
