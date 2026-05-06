@@ -95,7 +95,7 @@ function Generate() {
                     className="text-center mb-16"
                 >
                     <h1 className='text-4xl md:text-5xl font-bold mb-5 leading-tight'>
-                        Craft Your  Website with
+                        Craft Your  Website with 
                         <span className='text-transparent bg-clip-text bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400'>KODA.AI</span>
                     </h1>
                     <p className='text-zinc-400 max-w-2xl mb-20 mx-auto'>
