@@ -89,12 +89,12 @@ function Home() {
                             Pricing
                         </div>
 
-                        {/* ── Alt Model nav link ── */}
+                        {/* ── Try Another Model nav link ── */}
                         <div
                             className='hidden md:inline text-sm text-zinc-500 hover:text-emerald-400 cursor-pointer transition-colors duration-200'
                             onClick={() => window.open("https://koda-ai-client.onrender.com/", "_blank")}
                         >
-                            ⚡ Alt Model
+                            🤖 Try Another Model
                         </div>
 
                         {userData && (
@@ -255,26 +255,82 @@ function Home() {
                 <span className='bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent'>Made with ❤️ by IITians</span>
             </footer>
 
-            {/* ── Floating Alt Model Banner ── */}
+            {/* ── Floating Glassmorphism Model Switcher ── */}
+            <style>{`
+                @keyframes shimmer {
+                    0% { background-position: -200% center; }
+                    100% { background-position: 200% center; }
+                }
+                @keyframes pulse-glow {
+                    0%, 100% { box-shadow: 0 0 20px 2px rgba(139,92,246,0.35), 0 0 60px 10px rgba(236,72,153,0.15); }
+                    50% { box-shadow: 0 0 30px 6px rgba(139,92,246,0.55), 0 0 80px 20px rgba(236,72,153,0.25); }
+                }
+                @keyframes orbit {
+                    from { transform: rotate(0deg) translateX(22px) rotate(0deg); }
+                    to   { transform: rotate(360deg) translateX(22px) rotate(-360deg); }
+                }
+                .model-switcher {
+                    animation: pulse-glow 3s ease-in-out infinite;
+                }
+                .shimmer-btn {
+                    background: linear-gradient(
+                        110deg,
+                        #7c3aed 0%,
+                        #a855f7 30%,
+                        #f0abfc 50%,
+                        #a855f7 70%,
+                        #7c3aed 100%
+                    );
+                    background-size: 200% auto;
+                    animation: shimmer 2.5s linear infinite;
+                }
+                .shimmer-btn:hover {
+                    filter: brightness(1.15) saturate(1.2);
+                }
+                .dot-pulse {
+                    animation: pulse-glow 2s ease-in-out infinite;
+                }
+            `}</style>
             <AnimatePresence>
                 {!dismissBanner && (
                     <motion.div
-                        initial={{ y: 80, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        exit={{ y: 80, opacity: 0 }}
-                        transition={{ duration: 0.45, delay: 0.8, ease: "easeOut" }}
-                        className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-3 px-5 py-3 rounded-full bg-[#0e0e0e] border border-white/10 shadow-2xl shadow-black/60 backdrop-blur-md whitespace-nowrap"
+                        initial={{ y: 100, opacity: 0, scale: 0.9 }}
+                        animate={{ y: 0, opacity: 1, scale: 1 }}
+                        exit={{ y: 100, opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.5, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                        className="model-switcher fixed bottom-7 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-4 px-2 py-2 pr-3 rounded-2xl whitespace-nowrap"
+                        style={{
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)',
+                            backdropFilter: 'blur(24px)',
+                            WebkitBackdropFilter: 'blur(24px)',
+                            border: '1px solid rgba(255,255,255,0.12)',
+                            borderTop: '1px solid rgba(255,255,255,0.22)',
+                        }}
                     >
-                        <span className="text-xs text-zinc-400 hidden sm:inline">Want a different AI perspective?</span>
+                        {/* Glowing orb icon */}
+                        <div className="relative flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
+                            style={{ background: 'linear-gradient(135deg, #7c3aed, #ec4899)', boxShadow: '0 0 16px 4px rgba(139,92,246,0.5)' }}>
+                            <span className="text-base">🤖</span>
+                        </div>
+
+                        {/* Text */}
+                        <div className="flex flex-col leading-tight">
+                            <span className="text-[11px] font-medium text-white/50 hidden sm:block tracking-wide uppercase">New</span>
+                            <span className="text-sm font-semibold text-white hidden sm:block">Try Another Model</span>
+                        </div>
+
+                        {/* CTA shimmer button */}
                         <button
                             onClick={() => window.open("https://koda-ai-client.onrender.com/", "_blank")}
-                            className="text-xs font-semibold px-4 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-md shadow-emerald-900/40 cursor-pointer"
+                            className="shimmer-btn text-xs font-bold px-4 py-2 rounded-xl text-white cursor-pointer transition-all duration-200 tracking-wide"
                         >
-                            ⚡ Try Gemini Build
+                            Switch Now ⚡
                         </button>
+
+                        {/* Dismiss */}
                         <button
                             onClick={() => setDismissBanner(true)}
-                            className="text-zinc-600 hover:text-white transition-colors duration-200 text-base leading-none cursor-pointer"
+                            className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white/30 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer text-xs"
                             aria-label="Dismiss"
                         >
                             ✕
