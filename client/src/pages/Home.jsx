@@ -24,6 +24,7 @@ function Home() {
     const { userData } = useSelector(state => state.user)
     const [openProfile, setOpenProfile] = useState(false)
     const [websites, setWebsites] = useState(null)
+    const [dismissBanner, setDismissBanner] = useState(false)   // ← new one
     const profileRef = useRef(null)//fix Close profile dropdown on outside click by claude
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -133,7 +134,17 @@ function Home() {
                                                     <span>{userData.credits}</span>
                                                     <span className='font-semibold text-violet-400'>+</span>
                                                 </button>
-
+                                                
+                                                {/* Alt Model option inside mobile dropdown */}
+                                                <button
+                                                    className='md:hidden w-full px-4 py-3 text-left text-sm border-b border-white/10
+                                                    hover:bg-white/5 text-emerald-400'
+                                                    onClick={() => { window.open("https://koda-ai-client.onrender.com/", "_blank");
+                                                    setOpenProfile(false) }}
+                                                >
+                                                   ✦ Try Alt Model
+                                                </button>
+                                                
                                                 <button className='w-full px-4 py-3 text-left text-sm cursor-pointer hover:bg-white/5' onClick={() => { navigate("/dashboard"); setOpenProfile(false) }}>Dashboard</button>
                                                 <button className='w-full px-4 py-3 text-left text-sm cursor-pointer text-red-400 hover:bg-white/5' onClick={handleLogOut}>Logout</button>
 
