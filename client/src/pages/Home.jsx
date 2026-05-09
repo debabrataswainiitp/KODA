@@ -89,11 +89,7 @@ function Home() {
                         <div className='hidden md:inline text-sm text-zinc-500 hover:text-white cursor-pointer' onClick={() => navigate("/pricing")}>
                             Pricing
                         </div>
-                        <div className='inline text-xs md:text-sm text-zinc-500 hover:text-emerald-400 cursor-pointer transition-colors duration-200 px-1 md:px-0'
-                             onClick={() => window.open("https://koda-ai-client.onrender.com/", "_blank")}
-                        >
-                            ⚡ Try Another Model
-                        </div>
+                        
                         
                         {userData && <div className='hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm cursor-pointer hover:bg-white/10 transition' onClick={() => navigate("/pricing")}>
                             <Coins size={14} className='text-yellow-400' />
