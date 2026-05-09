@@ -95,6 +95,11 @@ function Home() {
                             <span>{userData.credits}</span>
                             <span className='font-semibold text-violet-400'>+</span>
                         </div>}
+                        <div className='hidden md:inline text-sm text-zinc-500 hover:text-white cursor-pointer'
+                            onClick={() => window.open("https://koda-ai-client.onrender.com/", "_blank")}
+                            >
+                            ✦ Use Alt Model
+                        </div>
 
 
                         {!userData ? (
