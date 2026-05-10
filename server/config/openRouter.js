@@ -1,33 +1,39 @@
 const openRouterUrl = "https://openrouter.ai/api/v1/chat/completions"
-const model = "deepseek/deepseek-chat"
 
-export const generateResponse = async (prompt) => {
-    const res = await fetch(openRouterUrl, {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-            'Content-Type': 'application/json',
-        },//removed all optional things provided by OpenRouter
-        body: JSON.stringify({
-            model: model,//Wrote all this by using Openrouter Docs Guide-used fetch
-            messages: [
-                { role: "system", content: "You must return ONLY valid raw JSON." }
-                ,
-                {
-                    role: 'user',
-                    content: prompt,
-                },
-            ],
-            temperature:0.2
-        }),
-    });
+export const generateResponse = async (prompt, model = "openrouter/auto") => {
+    const FALLBACK_MODEL = "openrouter/auto"
+    const modelsToTry = model !== FALLBACK_MODEL ? [model, FALLBACK_MODEL] : [model]
 
-if(!res.ok){
-    const err=await res.text()
-    throw new Error("openRouter err"+err)
-}
+    for (const currentModel of modelsToTry) {
+        const res = await fetch(openRouterUrl, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                model: currentModel,
+                messages: [
+                    { role: "system", content: "You must return ONLY valid raw JSON." },
+                    { role: 'user', content: prompt },
+                ],
+                temperature: 0.2
+            }),
+        });
 
-const data=await res.json()
-return data.choices[0].message.content
+        if (res.status === 429) {
+            console.log(`${currentModel} rate-limited, falling back...`)
+            continue
+        }
 
+        if (!res.ok) {
+            const err = await res.text()
+            throw new Error("openRouter err" + err)
+        }
+
+        const data = await res.json()
+        return data.choices[0].message.content
+    }
+
+    throw new Error("All models are currently unavailable. Please try again shortly.")
 }
