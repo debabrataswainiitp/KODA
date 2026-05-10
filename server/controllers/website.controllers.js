@@ -3,6 +3,13 @@ import User from "../models/user.model.js";
 import Website from "../models/website.model.js";
 import extractJson from "../utils/extractJson.js";
 
+const ALLOWED_MODELS = {
+    free:       ["openrouter/auto"],
+    pro:        ["openrouter/auto", "deepseek/deepseek-chat"],
+    enterprise: ["openrouter/auto", "deepseek/deepseek-chat"],
+}
+const DEFAULT_MODEL = "openrouter/auto"
+
 const masterPrompt = `
 YOU ARE A PRINCIPAL FRONTEND ARCHITECT
 AND A SENIOR UI/UX ENGINEER
@@ -159,47 +166,42 @@ export const generateWebsite = async (req, res) => {
             return res.status(400).json({ message: "prompt is required" })
         }
         const user = await User.findById(req.user._id)
-
         if (!user) {
             return res.status(400).json({ message: "user not found" })
         }
         if (user.credits < 50) {
-            return res.status(400).json({ message: "you  don't have enough credits to generate a website" })
+            return res.status(400).json({ message: "you don't have enough credits to generate a website" })
         }
+
+        const requestedModel = req.body.model || DEFAULT_MODEL
+        const allowedForPlan = ALLOWED_MODELS[user.plan] || ALLOWED_MODELS["free"]
+        const selectedModel = allowedForPlan.includes(requestedModel) ? requestedModel : DEFAULT_MODEL
 
         const finalPrompt = masterPrompt.replace("USER_PROMPT", prompt)
         let raw = ""
         let parsed = null
-        for (let i = 0; i < 2 && !parsed; i++) {
-            raw = await generateResponse(finalPrompt)
-            parsed = await extractJson(raw) // this const is to generate a proper parse data from raw json
 
+        for (let i = 0; i < 2 && !parsed; i++) {
+            raw = await generateResponse(finalPrompt, selectedModel)
+            parsed = await extractJson(raw)
             if (!parsed) {
-                raw = await generateResponse(finalPrompt + "\n\nRETURN ONLY RAW JSON.")
+                raw = await generateResponse(finalPrompt + "\n\nRETURN ONLY RAW JSON.", selectedModel)
                 parsed = await extractJson(raw)
             }
-
         }
-//checking if ai doesnt generates code
+
         if (!parsed.code) {
             console.log("ai returned invalid response", raw)
             return res.status(400).json({ message: "ai returned invalid response" })
         }
-//what type of data should there be in parsed data
+
         const website = await Website.create({
             user: user._id,
             title: prompt.slice(0, 60),
             latestCode: parsed.code,
             conversation: [
-                {
-                    role: "user",
-                    content: prompt
-                },
-                {
-                    role: "ai",
-                    content: parsed.message
-                }
-                
+                { role: "user", content: prompt },
+                { role: "ai", content: parsed.message }
             ]
         })
 
@@ -215,7 +217,7 @@ export const generateWebsite = async (req, res) => {
         return res.status(500).json({ message: `generate website error ${error}` })
     }
 }
- 
+
 
 export const getWebsiteById = async (req, res) => {
     try {
@@ -223,7 +225,6 @@ export const getWebsiteById = async (req, res) => {
             _id: req.params.id,
             user: req.user._id
         })
-
         if (!website) {
             return res.status(400).json({ message: "website not found" })
         }
@@ -233,7 +234,7 @@ export const getWebsiteById = async (req, res) => {
     }
 }
 
-//api to make changes in website
+
 export const changes = async (req, res) => {
     try {
         const { prompt } = req.body
@@ -245,22 +246,24 @@ export const changes = async (req, res) => {
             _id: req.params.id,
             user: req.user._id
         })
-
         if (!website) {
             return res.status(400).json({ message: "website not found" })
         }
 
         const user = await User.findById(req.user._id)
-
         if (!user) {
             return res.status(400).json({ message: "user not found" })
         }
-        if (user.credits <25) {
-            return res.status(400).json({ message: "you have not enough credits to generate a webiste" })
+        if (user.credits < 25) {
+            return res.status(400).json({ message: "you have not enough credits to generate a website" })
         }
 
+        const requestedModel = req.body.model || DEFAULT_MODEL
+        const allowedForPlan = ALLOWED_MODELS[user.plan] || ALLOWED_MODELS["free"]
+        const selectedModel = allowedForPlan.includes(requestedModel) ? requestedModel : DEFAULT_MODEL
+
         const updatePrompt = `
-UPDATE THIS HTML WEBSITE AND MAKE SURE YOU FOLLOW USER'S IINSTRUCTION STRICTLY
+UPDATE THIS HTML WEBSITE AND MAKE SURE YOU FOLLOW USER'S INSTRUCTION STRICTLY
 
 CURRENT CODE:
 ${website.latestCode}
@@ -276,15 +279,14 @@ RETURN RAW JSON ONLY:
 `
         let raw = ""
         let parsed = null
-        for (let i = 0; i < 2 && !parsed; i++) {
-            raw = await generateResponse(updatePrompt)
-            parsed = await extractJson(raw)
 
+        for (let i = 0; i < 2 && !parsed; i++) {
+            raw = await generateResponse(updatePrompt, selectedModel)
+            parsed = await extractJson(raw)
             if (!parsed) {
-                raw = await generateResponse(updatePrompt + "\n\nRETURN ONLY RAW JSON.")
+                raw = await generateResponse(updatePrompt + "\n\nRETURN ONLY RAW JSON.", selectedModel)
                 parsed = await extractJson(raw)
             }
-
         }
 
         if (!parsed.code) {
@@ -292,36 +294,32 @@ RETURN RAW JSON ONLY:
             return res.status(400).json({ message: "ai returned invalid response" })
         }
 
-//UPDATING CONVERSATION IN WITH UPDATED CODE
         website.conversation.push(
             { role: "user", content: prompt },
             { role: "ai", content: parsed.message },
         )
-
         website.latestCode = parsed.code
-
         await website.save()
+
         user.credits = user.credits - 25
         await user.save()
 
         return res.status(200).json({
-            message:parsed.message,
-            code:parsed.code,
+            message: parsed.message,
+            code: parsed.code,
             remainingCredits: user.credits
         })
 
-
     } catch (error) {
         console.log(error)
- return res.status(500).json({ message: `update website error ${error}` })
+        return res.status(500).json({ message: `update website error ${error}` })
     }
 }
 
 
-// API CONTROLLER TO GET ALL WEBSITE WE HAVE CREATED YET
-export const getAll=async (req,res) => {
+export const getAll = async (req, res) => {
     try {
-        const websites=await Website.find({user:req.user._id})
+        const websites = await Website.find({ user: req.user._id })
         return res.status(200).json(websites)
     } catch (error) {
         return res.status(500).json({ message: `get all websites error ${error}` })
@@ -329,45 +327,35 @@ export const getAll=async (req,res) => {
 }
 
 
-export const deploy=async (req,res)=>{
+export const deploy = async (req, res) => {
     try {
-         const website = await Website.findOne({
+        const website = await Website.findOne({
             _id: req.params.id,
             user: req.user._id
         })
-
         if (!website) {
             return res.status(400).json({ message: "website not found" })
         }
-
-        if(!website.slug){
-            website.slug=website.title.toLowerCase().replace(/[^a-z0-9]/g,"").slice(0,60)+website._id.toString().slice(-5)              
+        if (!website.slug) {
+            website.slug = website.title.toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 60) + website._id.toString().slice(-5)
         }
-
-        website.deployed=true
-        website.deployUrl=`${process.env.FRONTEND_URL}/site/${website.slug}`
+        website.deployed = true
+        website.deployUrl = `${process.env.FRONTEND_URL}/site/${website.slug}`
         await website.save()
-
-        return res.status(200).json({
-            url:website.deployUrl
-        })
-
+        return res.status(200).json({ url: website.deployUrl })
     } catch (error) {
-         return res.status(500).json({ message: `deploy website error ${error}` })
+        return res.status(500).json({ message: `deploy website error ${error}` })
     }
 }
 
-//gettiing website through slug
-export const getBySlug=async (req,res) => {
-    try {
-         const website = await Website.findOne({
-            slug: req.params.slug
-        })
 
+export const getBySlug = async (req, res) => {
+    try {
+        const website = await Website.findOne({ slug: req.params.slug })
         if (!website) {
             return res.status(400).json({ message: "website not found" })
         }
-          return res.status(200).json(website)
+        return res.status(200).json(website)
     } catch (error) {
         return res.status(500).json({ message: `get by slug website error ${error}` })
     }
