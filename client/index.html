@@ -5,9 +5,76 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Koda.ai</title>
+    <style>
+      * { cursor: none; }
+      .cursor {
+        position: fixed;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: white;
+        pointer-events: none;
+        z-index: 99999;
+        transform: translate(-50%, -50%);
+        transition: width 0.15s, height 0.15s, background 0.15s;
+      }
+      .cursor-follower {
+        position: fixed;
+        width: 32px;
+        height: 32px;
+        border: 1.5px solid rgba(167, 139, 250, 0.7);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 99998;
+        transform: translate(-50%, -50%);
+        transition: border-color 0.2s;
+      }
+    </style>
   </head>
   <body>
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      const cursor = document.getElementById('cursor');
+      const follower = document.getElementById('cursorFollower');
+      let mouseX = 0, mouseY = 0;
+      let fx = 0, fy = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        cursor.style.left = mouseX + 'px';
+        cursor.style.top = mouseY + 'px';
+      });
+
+      // Grow on hover over clickable elements
+      document.addEventListener('mouseover', (e) => {
+        if (e.target.matches('a, button, input, textarea, [role="button"]')) {
+          cursor.style.width = '16px';
+          cursor.style.height = '16px';
+          cursor.style.background = 'rgba(167,139,250,1)';
+          follower.style.borderColor = 'rgba(167,139,250,0.9)';
+        }
+      });
+      document.addEventListener('mouseout', (e) => {
+        if (e.target.matches('a, button, input, textarea, [role="button"]')) {
+          cursor.style.width = '10px';
+          cursor.style.height = '10px';
+          cursor.style.background = 'white';
+          follower.style.borderColor = 'rgba(167,139,250,0.7)';
+        }
+      });
+
+      function animate() {
+        fx += (mouseX - fx) * 0.1;
+        fy += (mouseY - fy) * 0.1;
+        follower.style.left = fx + 'px';
+        follower.style.top = fy + 'px';
+        requestAnimationFrame(animate);
+      }
+      animate();
+    </script>
   </body>
 </html>
