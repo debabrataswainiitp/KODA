@@ -34,10 +34,10 @@ const dispatch=useDispatch()
                 >
 
                     <motion.div
-                        initial={{ scale: 0.95, opacity: 0, y: 16 }}
+                        initial={{ scale: 0.88, opacity: 0, y: 60 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.95, opacity: 0, y: 16 }}
-                        transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                        exit={{ scale: 0.9, opacity: 0, y: 40 }}
+                        transition={{ duration: 0.45, ease: "easeOut" }}
                         className="relative w-full max-w-md p-px rounded-3xl bg-linear-to-br from-purple-500/80 via-blue-500 to-cyan-500/80"
                         onClick={(e) => e.stopPropagation()} //e is an event and it stops any event to work in Div
                     >
