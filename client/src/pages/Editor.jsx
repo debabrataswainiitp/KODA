@@ -12,6 +12,7 @@ import {
     Rocket,
     Send,
     Sparkles,
+    Trash2,
     X,
 } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
@@ -42,7 +43,7 @@ function EditorHeader({ title, onClose, onBack }) {
                         <ArrowLeft size={15} />
                     </button>
                 )}
-                <Logo size={28} className="flex-shrink-0" />
+                <Logo size={26} className="flex-shrink-0" />
                 <span className="truncate font-semibold" title={title}>{title}</span>
             </div>
             {onClose && (
@@ -127,6 +128,8 @@ function WebsiteEditor() {
     const [showCode, setShowCode] = useState(false)
     const [showFullPreview, setShowFullPreview] = useState(false)
     const [showChat, setShowChat] = useState(false)
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+    const [deleting, setDeleting] = useState(false)
 
     const handleUpdate = async () => {
         if (!prompt) return
@@ -161,6 +164,17 @@ function WebsiteEditor() {
             window.open(`${result.data.url}`, "_blank")
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    const handleDelete = async () => {
+        setDeleting(true)
+        try {
+            await axios.delete(`${serverUrl}/api/website/delete/${id}`, { withCredentials: true })
+            navigate("/dashboard")
+        } catch (error) {
+            console.log(error)
+            setDeleting(false)
         }
     }
 
@@ -266,6 +280,13 @@ function WebsiteEditor() {
                         >
                             <MonitorPlay size={18} className="text-violet-400" />
                         </button>
+                        <button
+                            className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 bg-white/5 text-red-400 transition hover:border-red-500/40 hover:bg-red-500/15"
+                            onClick={() => setShowDeleteConfirm(true)}
+                            title="Delete site"
+                        >
+                            <Trash2 size={17} />
+                        </button>
                     </div>
                 </div>
 
@@ -340,6 +361,52 @@ function WebsiteEditor() {
                         >
                             <Minimize2 size={18} />
                         </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* Delete confirm */}
+            <AnimatePresence>
+                {showDeleteConfirm && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[10000] flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm"
+                        onClick={() => !deleting && setShowDeleteConfirm(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="w-full max-w-sm rounded-3xl glass-dark p-7 text-center"
+                        >
+                            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-red-500/15">
+                                <Trash2 size={26} className="text-red-400" />
+                            </div>
+                            <h3 className="text-lg font-semibold">Delete this site?</h3>
+                            <p className="mx-auto mt-1.5 max-w-xs text-sm text-zinc-400">
+                                “{website.title}” and its history will be permanently removed. This can’t be undone.
+                            </p>
+                            <div className="mt-6 flex justify-center gap-3">
+                                <button
+                                    onClick={() => setShowDeleteConfirm(false)}
+                                    disabled={deleting}
+                                    className="rounded-xl border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium transition hover:bg-white/10 disabled:opacity-60"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    disabled={deleting}
+                                    className="flex items-center gap-2 rounded-xl bg-red-500 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-600 disabled:opacity-60"
+                                >
+                                    {deleting ? <Loader2 size={15} className="animate-spin" /> : <Trash2 size={15} />}
+                                    Delete
+                                </button>
+                            </div>
+                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>

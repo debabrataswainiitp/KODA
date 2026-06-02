@@ -71,11 +71,9 @@ function Navbar({ onGetStarted }) {
                     onClick={() => navigate("/")}
                     className="group flex items-center gap-2.5"
                 >
-                    <span className="transition-transform duration-300 group-hover:-translate-y-0.5">
-                        <Logo size={36} />
-                    </span>
+                    <Logo size={34} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:rotate-6" />
                     <span className="text-lg font-bold tracking-tight font-[var(--font-display)]">
-                        KODA<span className="text-gradient-violet">.AI</span>
+                        <span className="text-gradient-violet">KODA.AI</span>
                     </span>
                 </button>
 

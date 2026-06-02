@@ -390,8 +390,8 @@ function Home() {
             <footer className="relative border-t border-white/10 py-10 text-center text-sm text-zinc-500">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
                 <div className="mb-2 flex items-center justify-center gap-2">
-                    <Logo size={26} />
-                    <span className="font-semibold text-white">KODA.AI</span>
+                    <Logo size={22} />
+                    <span className="font-[var(--font-display)] text-base font-bold text-gradient-violet">KODA.AI</span>
                 </div>
                 © {new Date().getFullYear()} KODA.AI — All rights reserved.
                 <br />

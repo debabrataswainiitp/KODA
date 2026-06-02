@@ -152,6 +152,7 @@ Full-bleed `iframe`; glass "Site not found" empty state.
 - `src/components/ui/TiltCard.jsx`
 - `src/components/ui/MagneticButton.jsx`
 - `src/components/ui/Navbar.jsx`
+- `src/components/ui/Logo.jsx` — logo wrapper (uses bundled `vite.svg`)
 - `DESIGN.md` (this file)
 
 **Modified — design system & pages**
@@ -167,7 +168,15 @@ Full-bleed `iframe`; glass "Site not found" empty state.
 - `eslint.config.js` — added `react/jsx-uses-vars` (recognise JSX usage)
 - `package.json` / `package-lock.json` — added `eslint-plugin-react` (dev)
 
-No backend, routing, state, or API contracts were changed — purely presentation.
+### Site management (delete)
+Users can delete a generated site from the **Dashboard** (trash button on each
+card → in-card confirm) and from the **Editor** (toolbar trash → confirm modal).
+This adds one backend endpoint:
+- `server/controllers/website.controllers.js` — `deleteWebsite` (ownership-checked)
+- `server/routes/website.routes.js` — `DELETE /api/website/delete/:id`
+
+Aside from the delete endpoint above, no other backend, routing, or API
+contracts were changed — the redesign itself is purely presentation.
 
 ---
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 import {
     ArrowLeft,
     CheckCircle,
@@ -8,6 +8,7 @@ import {
     Plus,
     Rocket,
     Share2,
+    Trash2,
 } from "lucide-react"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
@@ -24,6 +25,8 @@ function Dashboard() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [copiedId, setCopiedId] = useState(null)
+    const [confirmId, setConfirmId] = useState(null)
+    const [deletingId, setDeletingId] = useState(null)
 
     const handleDeploy = async (id) => {
         try {
@@ -63,6 +66,19 @@ function Dashboard() {
         await navigator.clipboard.writeText(site.deployUrl)
         setCopiedId(site._id)
         setTimeout(() => setCopiedId(null), 2000)
+    }
+
+    const handleDelete = async (id) => {
+        setDeletingId(id)
+        try {
+            await axios.delete(`${serverUrl}/api/website/delete/${id}`, { withCredentials: true })
+            setWebsites((prev) => prev.filter((w) => w._id !== id))
+            setConfirmId(null)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setDeletingId(null)
+        }
     }
 
     return (
@@ -155,6 +171,13 @@ function Dashboard() {
                                                 className="pointer-events-none absolute inset-0 h-[140%] w-[140%] origin-top-left scale-[0.72] bg-white"
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                            <button
+                                                onClick={(e) => { e.stopPropagation(); setConfirmId(w._id) }}
+                                                title="Delete site"
+                                                className="absolute left-3 top-3 z-10 grid h-8 w-8 place-items-center rounded-lg bg-black/50 text-zinc-200 backdrop-blur transition hover:bg-red-500/80 hover:text-white"
+                                            >
+                                                <Trash2 size={15} />
+                                            </button>
                                             {w.deployed && (
                                                 <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-1 text-[10px] font-medium text-emerald-300 backdrop-blur">
                                                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Live
@@ -200,6 +223,41 @@ function Dashboard() {
                                                 </motion.button>
                                             )}
                                         </div>
+
+                                        <AnimatePresence>
+                                            {confirmId === w._id && (
+                                                <motion.div
+                                                    initial={{ opacity: 0 }}
+                                                    animate={{ opacity: 1 }}
+                                                    exit={{ opacity: 0 }}
+                                                    className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 rounded-3xl bg-black/80 px-6 text-center backdrop-blur-sm"
+                                                >
+                                                    <div className="grid h-12 w-12 place-items-center rounded-2xl bg-red-500/15">
+                                                        <Trash2 size={22} className="text-red-400" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="font-semibold">Delete this site?</p>
+                                                        <p className="mt-1 text-xs text-zinc-400">This action can’t be undone.</p>
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={() => setConfirmId(null)}
+                                                            className="rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm transition hover:bg-white/10"
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDelete(w._id)}
+                                                            disabled={deletingId === w._id}
+                                                            className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600 disabled:opacity-60"
+                                                        >
+                                                            {deletingId === w._id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </TiltCard>
                                 </motion.div>
                             )

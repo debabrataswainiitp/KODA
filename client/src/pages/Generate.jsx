@@ -91,9 +91,9 @@ function Generate() {
                     >
                         <ArrowLeft size={16} />
                     </button>
-                    <Logo size={30} />
+                    <Logo size={28} />
                     <h1 className="font-[var(--font-display)] text-lg font-bold">
-                        KODA<span className="text-gradient-violet">.AI</span>
+                        <span className="text-gradient-violet">KODA.AI</span>
                     </h1>
                 </div>
             </header>

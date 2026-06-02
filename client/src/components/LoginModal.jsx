@@ -71,10 +71,9 @@ function LoginModal({ open, onClose }) {
                             </button>
 
                             <div className="relative px-8 pb-10 pt-12 text-center">
-                                <div className="mx-auto mb-6 flex w-fit justify-center drop-shadow-[0_8px_24px_rgba(139,92,246,0.6)]">
-                                    <Logo size={60} />
+                                <div className="mx-auto mb-6 flex w-fit justify-center drop-shadow-[0_8px_24px_rgba(139,92,246,0.5)]">
+                                    <Logo size={56} />
                                 </div>
-
                                 <span className="mb-5 inline-block rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-zinc-300">
                                     AI-powered website builder by IITians
                                 </span>
