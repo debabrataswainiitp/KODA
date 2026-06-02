@@ -1,48 +1,62 @@
-import { ArrowLeft, Check, CheckCheck, CheckCircle, Rocket, Share2 } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react"
 import { motion } from "motion/react"
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import { serverUrl } from '../App'
+import {
+    ArrowLeft,
+    CheckCircle,
+    FolderPlus,
+    Loader2,
+    Plus,
+    Rocket,
+    Share2,
+} from "lucide-react"
+import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import { serverUrl } from "../App"
+import Aurora from "../components/ui/Aurora"
+import TiltCard from "../components/ui/TiltCard"
+import MagneticButton from "../components/ui/MagneticButton"
+
 function Dashboard() {
-    const { userData } = useSelector(state => state.user)
+    const { userData } = useSelector((state) => state.user)
     const navigate = useNavigate()
     const [websites, setWebsites] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [copiedId, setCopiedId] = useState(null)
+
     const handleDeploy = async (id) => {
         try {
-            const result = await axios.get(`${serverUrl}/api/website/deploy/${id}`, { withCredentials: true })
-            window.open(`${result.data.url}`, "_blank") // _blank so that it opens in new tab
+            const result = await axios.get(`${serverUrl}/api/website/deploy/${id}`, {
+                withCredentials: true,
+            })
+            window.open(`${result.data.url}`, "_blank")
             setWebsites((prev) =>
-        prev.map((w) =>
-          w._id === id
-            ? { ...w, deployed: true, deployUrl: result.data.url }
-            : w
-        )
-      );
+                prev.map((w) =>
+                    w._id === id ? { ...w, deployed: true, deployUrl: result.data.url } : w
+                )
+            )
         } catch (error) {
             console.log(error)
         }
     }
 
     useEffect(() => {
-        const handleGetAllWebsites = async () => {
+        const getWebsites = async () => {
             setLoading(true)
             try {
-
-                const result = await axios.get(`${serverUrl}/api/website/get-all`, { withCredentials: true })
+                const result = await axios.get(`${serverUrl}/api/website/get-all`, {
+                    withCredentials: true,
+                })
                 setWebsites(result.data || [])
-                setLoading(false)
             } catch (error) {
                 console.log(error)
-                setError(error.response.data.message)
+                setError(error?.response?.data?.message || "Something went wrong")
+            } finally {
                 setLoading(false)
             }
         }
-        handleGetAllWebsites()
+        getWebsites()
     }, [])
 
     const handleCopy = async (site) => {
@@ -52,113 +66,147 @@ function Dashboard() {
     }
 
     return (
-        <div className='relative min-h-screen bg-[#040404] text-white overflow-hidden'>
-            
-            <div className='absolute -top-32 -left-24 w-[500px] h-[500px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none' />
-            <div className='absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full bg-pink-600/10 blur-[100px] pointer-events-none' />
-            <div className='absolute top-[340px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-violet-600/[0.08] blur-[100px] pointer-events-none' />
+        <div className="relative min-h-screen bg-koda-bg text-white">
+            <Aurora />
 
-            
-            <div className='sticky top-0 z-40 backdrop-blur-xl bg-black/50 border-b border-white/10'>
-                <div className='max-w-7xl mx-auto px-6 h-16 flex items-center justify-between'>
-                    <div className='flex items-center gap-3'>
-                        <button className='p-2 rounded-lg hover:bg-white/10 transition' onClick={() => navigate("/")}><ArrowLeft size={16} /></button>
-                        <h1 className='text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent'>Dashboard</h1>
+            {/* Top bar */}
+            <header className="sticky top-0 z-40 px-4 pt-4">
+                <div className="glass-dark mx-auto flex max-w-7xl items-center justify-between rounded-2xl px-4 py-3">
+                    <div className="flex items-center gap-3">
+                        <button
+                            className="grid h-9 w-9 place-items-center rounded-xl border border-white/10 bg-white/5 transition hover:bg-white/10"
+                            onClick={() => navigate("/")}
+                        >
+                            <ArrowLeft size={16} />
+                        </button>
+                        <h1 className="font-[var(--font-display)] text-lg font-bold">Dashboard</h1>
                     </div>
-                    <button className='px-4 py-2 rounded-lg bg-gradient-to-r from-violet-600 to-pink-600 text-white text-sm font-semibold hover:scale-105 hover:from-violet-700 hover:to-pink-700 transition duration-300 shadow-lg shadow-violet-900/40' onClick={() => navigate("/generate")}>
-                        + New Project
-                    </button>
+                    <MagneticButton onClick={() => navigate("/generate")} className="px-4 py-2 text-sm">
+                        <Plus size={16} /> New Project
+                    </MagneticButton>
                 </div>
-            </div>
-            <div className='max-w-7xl mx-auto px-6 py-10'>
+            </header>
+
+            <main className="mx-auto max-w-7xl px-6 py-12">
                 <motion.div
-                    initial={{ opacity: 0, y: 12 }}
+                    initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
                     className="mb-10"
                 >
-                    <p className='text-l text-zinc-400 mb-1 '>Welcome Back</p>
-                    <h1 className='text-3xl font-bold'>{userData.name}</h1> 
+                    <p className="text-sm text-zinc-400">Welcome back</p>
+                    <h1 className="font-[var(--font-display)] text-4xl font-bold">
+                        {userData?.name}
+                    </h1>
                 </motion.div>
 
                 {loading && (
-                    <div className="mt-24 text-center text-zinc-400">Loading Your Websites...</div>
+                    <div className="mt-24 flex flex-col items-center text-zinc-400">
+                        <Loader2 className="mb-3 animate-spin text-violet-400" />
+                        Loading your websites...
+                    </div>
                 )}
 
                 {error && !loading && (
                     <div className="mt-24 text-center text-red-400">{error}</div>
                 )}
 
-                {websites?.length == 0 && (
-                    <div className="mt-24 text-center text-zinc-400">You have projects yet. Clink "New Project" to create your first one.</div>
+                {!loading && !error && websites?.length === 0 && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mx-auto mt-20 max-w-md rounded-3xl glass p-12 text-center"
+                    >
+                        <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-violet-600 to-pink-500 shadow-lg">
+                            <FolderPlus size={26} className="text-white" />
+                        </div>
+                        <h3 className="mb-2 text-lg font-semibold">No projects yet</h3>
+                        <p className="mb-6 text-sm text-zinc-400">
+                            Click “New Project” to create your first AI-generated website.
+                        </p>
+                        <MagneticButton onClick={() => navigate("/generate")} className="px-6 py-3 text-sm">
+                            <Plus size={16} /> Create your first site
+                        </MagneticButton>
+                    </motion.div>
                 )}
 
                 {!loading && !error && websites?.length > 0 && (
-                    <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8'>
+                    <div className="perspective-2000 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
                         {websites.map((w, i) => {
-
                             const copied = copiedId === w._id
-
-                            return <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: i * 0.15 }}
-                                whileHover={{ y: -6 }}
-                               
-                                className="rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:bg-white/10 transition flex flex-col"
-                            >
-                                <div className='relative h-40 bg-black cursor-pointer'  onClick={()=>navigate(`/editor/${w._id}`)}>
-                                    <iframe srcDoc={w.latestCode} className='absolute inset-0 w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white' />
-                                    <div className='absolute inset-0 bg-black/30' />
-                                </div>
-
-                                <div className='p-5 flex flex-col gap-4 flex-1'>
-                                    <h3 className='text-base font-semibold line-clamp-2'>{w.title}</h3>
-                                    <p className='text-xs text-zinc-400'>Last Updated {""}
-                                        {new Date(w.updatedAt).toLocaleDateString()}
-                                    </p>
-
-                                    {!w.deployed ? (
-                                        <button className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-linear-to-br from-violet-600 to-pink-600 hover:from-violet-700 hover:to-pink-700 text-sm font-semibold hover:scale-107 shadow-lg shadow-violet-900/30 transition-all duration-400"
-                                            onClick={() => handleDeploy(w._id)}
-
-                                        ><Rocket size={18} /> Deploy</button>
-                                    ) : (<motion.button
-                                        whileTap={{ scale: 0.75 }}
-                                        onClick={() => handleCopy(w)}
-                                        className={`
-                          mt-auto flex items-center justify-center gap-2
-                          px-4 py-2 rounded-xl text-sm font-medium
-                          transition-all
-                          ${copied
-                                                ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                                                : "bg-white/10 hover:bg-white/20 border border-white/10"
-                                            }
-                        `}
+                            return (
+                                <motion.div
+                                    key={w._id}
+                                    initial={{ opacity: 0, y: 24 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: i * 0.08, duration: 0.5 }}
+                                >
+                                    <TiltCard
+                                        intensity={8}
+                                        className="flex h-full flex-col overflow-hidden rounded-3xl glass"
                                     >
-                                        { copied?(
-                                            <>
-                                            <CheckCircle size={14}/>
-                                            Link Copied to Clipboard
-                                            </>
-                                        ):
-                                        <>
-                                        <Share2 size={14}/>
-                                        Share Link
-                                        </>
-                                        }
-                                    </motion.button>)}
+                                        <div
+                                            className="relative h-44 cursor-pointer overflow-hidden bg-black"
+                                            onClick={() => navigate(`/editor/${w._id}`)}
+                                        >
+                                            <iframe
+                                                srcDoc={w.latestCode}
+                                                title={w.title}
+                                                className="pointer-events-none absolute inset-0 h-[140%] w-[140%] origin-top-left scale-[0.72] bg-white"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                            {w.deployed && (
+                                                <span className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-1 text-[10px] font-medium text-emerald-300 backdrop-blur">
+                                                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" /> Live
+                                                </span>
+                                            )}
+                                        </div>
 
-                                </div>
+                                        <div className="flex flex-1 flex-col gap-4 p-5">
+                                            <div>
+                                                <h3 className="line-clamp-1 text-base font-semibold">{w.title}</h3>
+                                                <p className="text-xs text-zinc-500">
+                                                    Updated {new Date(w.updatedAt).toLocaleDateString()}
+                                                </p>
+                                            </div>
 
-                            </motion.div>
+                                            {!w.deployed ? (
+                                                <MagneticButton
+                                                    onClick={() => handleDeploy(w._id)}
+                                                    strength={0.2}
+                                                    className="mt-auto px-4 py-2.5 text-sm"
+                                                >
+                                                    <Rocket size={16} /> Deploy
+                                                </MagneticButton>
+                                            ) : (
+                                                <motion.button
+                                                    whileTap={{ scale: 0.96 }}
+                                                    onClick={() => handleCopy(w)}
+                                                    className={`mt-auto flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition ${
+                                                        copied
+                                                            ? "border border-emerald-500/30 bg-emerald-500/20 text-emerald-300"
+                                                            : "glass hover:bg-white/10"
+                                                    }`}
+                                                >
+                                                    {copied ? (
+                                                        <>
+                                                            <CheckCircle size={15} /> Link copied!
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Share2 size={15} /> Share link
+                                                        </>
+                                                    )}
+                                                </motion.button>
+                                            )}
+                                        </div>
+                                    </TiltCard>
+                                </motion.div>
+                            )
                         })}
-
                     </div>
                 )}
-
-
-            </div>
+            </main>
         </div>
     )
 }

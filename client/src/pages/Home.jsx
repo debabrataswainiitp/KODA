@@ -1,365 +1,430 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
-import LoginModal from '../components/LoginModal'
-import { useDispatch, useSelector } from 'react-redux'
-import { Coins } from "lucide-react"
-import { serverUrl } from '../App'
-import axios from 'axios'
-import { setUserData } from '../redux/userSlice'
-import { useNavigate } from 'react-router-dom'
+import {
+    ArrowRight,
+    Code2,
+    Gauge,
+    LayoutTemplate,
+    MousePointerClick,
+    Palette,
+    Rocket,
+    Sparkles,
+    Wand2,
+    Zap,
+} from "lucide-react"
+import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
+import { serverUrl } from "../App"
+import LoginModal from "../components/LoginModal"
+import Aurora from "../components/ui/Aurora"
+import Navbar from "../components/ui/Navbar"
+import TiltCard from "../components/ui/TiltCard"
+import MagneticButton from "../components/ui/MagneticButton"
+
+const ROTATING = ["websites", "landing pages", "portfolios", "dashboards"]
+
+const FEATURES = [
+    {
+        icon: Wand2,
+        title: "AI-Powered Code",
+        desc: "Describe an idea in plain English and watch KODA generate clean, production-ready HTML, CSS & JS in seconds.",
+        accent: "from-violet-500 to-purple-500",
+    },
+    {
+        icon: LayoutTemplate,
+        title: "Intuitive Interface",
+        desc: "A buttery-smooth editor with live preview, in-context chat edits and a code view — design and ship without friction.",
+        accent: "from-fuchsia-500 to-pink-500",
+    },
+    {
+        icon: Gauge,
+        title: "Responsive Layouts",
+        desc: "Every site is fully responsive out of the box, pixel-perfect from mobile to ultra-wide, and deploy-ready instantly.",
+        accent: "from-cyan-500 to-blue-500",
+    },
+]
+
+const STEPS = [
+    { icon: MousePointerClick, title: "Describe", desc: "Type your vision in a single prompt." },
+    { icon: Sparkles, title: "Generate", desc: "KODA's AI crafts a complete site." },
+    { icon: Rocket, title: "Deploy", desc: "Publish to a live URL in one click." },
+]
+
+const STATS = [
+    { value: "10k+", label: "Sites generated" },
+    { value: "60s", label: "Avg. build time" },
+    { value: "99.9%", label: "Uptime" },
+    { value: "4.9/5", label: "Creator rating" },
+]
 
 function Home() {
-
-    const highlights = [
-        "AI Powered Code",
-        "Intuitive User Interface",
-        "Fully Responsive Layouts",
-    ]
-    const cardAccents = [
-        'from-violet-600 to-violet-400',
-        'from-pink-600 to-pink-400',
-        'from-cyan-600 to-cyan-400',
-    ]
-
-    const MODELS = [
-        { id: "openrouter/auto",        label: "Auto Free",   tag: "default", free: true },
-        { id: "deepseek/deepseek-chat", label: "DeepSeek V3", tag: "pro",     free: false },
-    ]
-
     const [openLogin, setOpenLogin] = useState(false)
-    const { userData } = useSelector(state => state.user)
-    const [openProfile, setOpenProfile] = useState(false)
-    const [websites, setWebsites] = useState(null)
     const [dismissBanner, setDismissBanner] = useState(false)
-    const profileRef = useRef(null)
-    const dispatch = useDispatch()
+    const [wordIndex, setWordIndex] = useState(0)
+    const [websites, setWebsites] = useState(null)
+    const { userData } = useSelector((state) => state.user)
     const navigate = useNavigate()
 
-    const [selectedModel, setSelectedModel] = useState(
-        () => localStorage.getItem("kodaai_model") || "openrouter/auto"
-    )
-
-    const handleModelSwitch = (modelId) => {
-        const model = MODELS.find(m => m.id === modelId)
-        if (!model) return
-        if (!model.free && userData?.plan === "free") return
-        setSelectedModel(modelId)
-        localStorage.setItem("kodaai_model", modelId)
-    }
-
-    const handleLogOut = async () => {
-        try {
-            await axios.get(`${serverUrl}/api/auth/logout`, { withCredentials: true })
-            dispatch(setUserData(null))
-            setOpenProfile(false)
-            setSelectedModel("openrouter/auto")
-            localStorage.setItem("kodaai_model", "openrouter/auto")
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    useEffect(() => {
+        const id = setInterval(
+            () => setWordIndex((i) => (i + 1) % ROTATING.length),
+            2200
+        )
+        return () => clearInterval(id)
+    }, [])
 
     useEffect(() => {
-        if (!userData) return;
-        const handleGetAllWebsites = async () => {
+        if (!userData) return
+        const getWebsites = async () => {
             try {
-                const result = await axios.get(`${serverUrl}/api/website/get-all`, { withCredentials: true })
+                const result = await axios.get(`${serverUrl}/api/website/get-all`, {
+                    withCredentials: true,
+                })
                 setWebsites(result.data || [])
             } catch (error) {
                 console.log(error)
             }
         }
-        handleGetAllWebsites()
+        getWebsites()
     }, [userData])
 
-    useEffect(() => {
-        const handleClickOutside = (e) => {
-            if (profileRef.current && !profileRef.current.contains(e.target)) {
-                setOpenProfile(false)
-            }
-        }
-        document.addEventListener('mousedown', handleClickOutside)
-        return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
+    const handleCTA = () => (userData ? navigate("/dashboard") : setOpenLogin(true))
 
     return (
-        <div className='relative min-h-screen bg-[#040404] text-white overflow-x-hidden'>
+        <div className="relative min-h-screen overflow-x-hidden bg-koda-bg text-white">
+            <Aurora />
+            <Navbar onGetStarted={() => setOpenLogin(true)} />
 
-            <div className='absolute -top-32 -left-24 w-[500px] h-[500px] rounded-full bg-purple-600/10 blur-[120px] pointer-events-none' />
-            <div className='absolute -top-20 -right-20 w-[400px] h-[400px] rounded-full bg-pink-600/10 blur-[100px] pointer-events-none' />
-            <div className='absolute top-[340px] left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-violet-600/[0.08] blur-[100px] pointer-events-none' />
-
-            {/* Navbar */}
-            <motion.div
-                initial={{ y: -40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 1 }}
-                className='fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-black/40 border-b border-white/10'
-            >
-                <div className='max-w-7xl mx-auto px-6 py-4 flex justify-between items-center'>
-
-                    <div className='text-lg font-semibold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent'>
-                        KODA.AI
-                    </div>
-
-                    <div className='flex items-center gap-5'>
-
-                        <div className='hidden md:inline text-sm text-zinc-500 hover:text-white cursor-pointer' onClick={() => navigate("/pricing")}>
-                            Pricing
-                        </div>
-
-                        {userData && (
-                            <div className='hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-sm cursor-pointer hover:bg-white/10 transition' onClick={() => navigate("/pricing")}>
-                                <Coins size={14} className='text-yellow-400' />
-                                <span className='text-zinc-300'>Credits</span>
-                                <span>{userData.credits}</span>
-                                <span className='font-semibold text-violet-400'>+</span>
-                            </div>
-                        )}
-
-                        {!userData ? (
-                            <button
-                                className='px-4 py-2 rounded-lg border shadow-lg shadow-purple-500/30 hover:bg-purple-500/20 hover:border-purple-400/70 cursor-pointer hover:shadow-purple-400/50 transition-all duration-400 border-white/20 text-sm'
-                                onClick={() => setOpenLogin(true)}
-                            >
-                                Get Started
-                            </button>
-                        ) : (
-                            <div className='relative' ref={profileRef}>
-                                <button className='flex items-center' onClick={() => setOpenProfile(!openProfile)}>
-                                    <img
-                                        src={userData?.avatar || `https://ui-avatars.com/api/?name=${userData.name}`}
-                                        alt=""
-                                        referrerPolicy='no-referrer'
-                                        className='w-9 h-9 rounded-full border border-white/20 object-cover'
-                                    />
-                                </button>
-                                <AnimatePresence>
-                                    {openProfile && (
-                                        <motion.div
-                                            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                                            className="absolute right-0 mt-3 w-64 z-50 rounded-xl bg-[#0b0b0b] border border-white/10 shadow-2xl overflow-hidden"
-                                        >
-                                            {/* User info */}
-                                            <div className='px-4 py-3 border-b border-white/10'>
-                                                <p className='text-sm font-medium truncate'>{userData.name}</p>
-                                                <p className='text-xs text-zinc-500 truncate'>{userData.email}</p>
-                                            </div>
-
-                                            {/* Mobile credits */}
-                                            <button className='md:hidden w-full px-4 py-3 flex items-center gap-2 text-sm border-b border-white/10 hover:bg-white/5'>
-                                                <Coins size={14} className='text-yellow-400' />
-                                                <span className='text-zinc-300'>Credits</span>
-                                                <span>{userData.credits}</span>
-                                                <span className='font-semibold text-violet-400'>+</span>
-                                            </button>
-
-                                            {/* AI Model switcher */}
-                                            <div className='px-4 py-3 border-b border-white/10'>
-                                                <p className='text-xs text-zinc-500 mb-2 uppercase tracking-wide'>AI Model</p>
-                                                {MODELS.map(m => {
-                                                    const locked = !m.free && userData?.plan === "free"
-                                                    return (
-                                                        <button
-                                                            key={m.id}
-                                                            onClick={() => handleModelSwitch(m.id)}
-                                                            disabled={locked}
-                                                            title={locked ? "Upgrade to Pro to unlock this model" : `Switch to ${m.label}`}
-                                                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg mb-1 text-sm transition
-                                                                ${selectedModel === m.id ? "bg-violet-600/20 border border-violet-500/40" : "hover:bg-white/5 border border-transparent"}
-                                                                ${locked ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
-                                                        >
-                                                            <div className='flex items-center gap-2'>
-                                                                <span className={`w-2 h-2 rounded-full ${selectedModel === m.id ? "bg-violet-400" : "bg-zinc-600"}`} />
-                                                                <span className={selectedModel === m.id ? "text-white" : "text-zinc-400"}>{m.label}</span>
-                                                            </div>
-                                                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-medium
-                                                                ${m.free ? "bg-green-500/20 text-green-400" : "bg-violet-500/20 text-violet-400"}`}>
-                                                                {locked ? "🔒 Pro" : m.tag}
-                                                            </span>
-                                                        </button>
-                                                    )
-                                                })}
-                                                {userData?.plan === "free" && (
-                                                    <p className='text-[10px] text-zinc-600 mt-1 px-1'>
-                                                        Upgrade to Pro to unlock DeepSeek V3
-                                                    </p>
-                                                )}
-                                            </div>
-
-                                            <button
-                                                className='w-full px-4 py-3 text-left text-sm cursor-pointer hover:bg-white/5'
-                                                onClick={() => { navigate("/dashboard"); setOpenProfile(false) }}
-                                            >
-                                                Dashboard
-                                            </button>
-                                            <button
-                                                className='w-full px-4 py-3 text-left text-sm cursor-pointer text-red-400 hover:bg-white/5'
-                                                onClick={handleLogOut}
-                                            >
-                                                Logout
-                                            </button>
-
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </motion.div>
-
-            {/* Hero Section */}
-            <section className='pt-44 pb-32 px-6 text-center'>
-                <motion.h1
-                    initial={{ opacity: 0, y: 40 }}
+            {/* ============================= HERO ============================= */}
+            <section className="relative mx-auto max-w-6xl px-6 pt-40 pb-24 text-center">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.75 }}
-                    className="text-5xl md:text-7xl font-bold tracking-tight"
+                    transition={{ duration: 0.6 }}
+                    className="group relative mx-auto inline-flex items-center gap-2 overflow-hidden rounded-full glass px-4 py-1.5 text-xs text-zinc-300"
                 >
-                    Unleash Your Creativity with<br />
-                    <span className='bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-pink-400 to-orange-400'>KODA.AI</span>
+                    <span className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shine" />
+                    <Sparkles size={13} className="text-violet-400" />
+                    AI-powered website builder, crafted by IITians
+                </motion.div>
+
+                <motion.h1
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.05 }}
+                    className="mx-auto mt-7 max-w-4xl font-[var(--font-display)] text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl"
+                >
+                    Build stunning{" "}
+                    <span className="relative inline-grid">
+                        <AnimatePresence mode="wait">
+                            <motion.span
+                                key={wordIndex}
+                                initial={{ y: "0.6em", opacity: 0, rotateX: -40 }}
+                                animate={{ y: 0, opacity: 1, rotateX: 0 }}
+                                exit={{ y: "-0.6em", opacity: 0, rotateX: 40 }}
+                                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                                className="text-gradient [grid-area:1/1]"
+                            >
+                                {ROTATING[wordIndex]}
+                            </motion.span>
+                        </AnimatePresence>
+                    </span>
+                    <br />
+                    with just a prompt
                 </motion.h1>
 
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.75 }}
-                    className='mt-8 max-w-2xl mx-auto text-zinc-400 text-lg'
+                    transition={{ duration: 0.7, delay: 0.15 }}
+                    className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-zinc-400"
                 >
-                    Your AI-Powered Creative Companion for building stunning websites, captivating content, and more.
+                    KODA.AI is your creative companion for turning ideas into beautiful,
+                    responsive, deploy-ready websites — no code required.
                 </motion.p>
 
-                <motion.button
-                    initial={{ opacity: 0, y: 40 }}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.75 }}
-                    className="mt-10 px-8 py-4 rounded-lg bg-gradient-to-r from-violet-600 to-pink-600 text-white text-lg font-semibold hover:from-violet-700 hover:to-pink-700 transition-all duration-400 shadow-lg shadow-violet-900/40 cursor-pointer"
-                    onClick={() => userData ? navigate("/dashboard") : setOpenLogin(true)}
+                    transition={{ duration: 0.7, delay: 0.25 }}
+                    className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
                 >
-                    {userData ? "Dashboard" : "Get Started"}
-                </motion.button>
+                    <MagneticButton onClick={handleCTA} className="px-8 py-4 text-base">
+                        {userData ? "Open Dashboard" : "Start building free"}
+                        <ArrowRight size={18} />
+                    </MagneticButton>
+                    <MagneticButton
+                        variant="glass"
+                        onClick={() => navigate("/pricing")}
+                        className="px-8 py-4 text-base"
+                    >
+                        View pricing
+                    </MagneticButton>
+                </motion.div>
+
+                {/* 3D floating app-window visual */}
+                <motion.div
+                    initial={{ opacity: 0, y: 60, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ duration: 0.9, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    className="perspective-2000 mt-20"
+                >
+                    <TiltCard
+                        intensity={8}
+                        className="group mx-auto max-w-4xl rounded-2xl glass-strong p-2 shadow-[0_40px_120px_-30px_rgba(124,58,237,0.55)]"
+                    >
+                        {/* browser chrome */}
+                        <div className="flex items-center gap-2 px-3 py-2.5">
+                            <span className="h-3 w-3 rounded-full bg-red-400/80" />
+                            <span className="h-3 w-3 rounded-full bg-amber-400/80" />
+                            <span className="h-3 w-3 rounded-full bg-emerald-400/80" />
+                            <div className="ml-3 flex flex-1 items-center gap-2 rounded-lg bg-black/40 px-3 py-1.5 text-xs text-zinc-500">
+                                <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                                koda.ai/preview
+                            </div>
+                        </div>
+
+                        {/* faux generated site */}
+                        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#0c0c16] to-[#0a0a12] p-8">
+                            <div className="absolute -top-16 left-1/4 h-48 w-48 rounded-full bg-violet-600/30 blur-3xl" />
+                            <div className="absolute -bottom-16 right-1/4 h-48 w-48 rounded-full bg-cyan-500/20 blur-3xl" />
+
+                            <div className="relative translate-z-10">
+                                <div className="mx-auto mb-4 h-2.5 w-28 rounded-full bg-white/15" />
+                                <div className="mx-auto mb-3 h-8 w-3/4 rounded-lg bg-gradient-to-r from-violet-400/70 to-pink-400/70" />
+                                <div className="mx-auto mb-6 h-8 w-1/2 rounded-lg bg-white/10" />
+                                <div className="mx-auto flex w-fit gap-3">
+                                    <div className="h-9 w-32 rounded-lg bg-gradient-to-r from-violet-500 to-fuchsia-500 shadow-lg shadow-violet-900/40" />
+                                    <div className="h-9 w-24 rounded-lg border border-white/15 bg-white/5" />
+                                </div>
+                                <div className="mt-8 grid grid-cols-3 gap-3">
+                                    {[0, 1, 2].map((i) => (
+                                        <div
+                                            key={i}
+                                            className="h-20 rounded-xl border border-white/10 bg-white/5"
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* floating depth chips */}
+                        <div className="pointer-events-none absolute -left-5 top-1/3 translate-z-20 animate-float rounded-xl glass px-3 py-2 text-xs font-medium text-zinc-200 shadow-xl">
+                            <Code2 size={13} className="mr-1 inline text-violet-400" /> Clean code
+                        </div>
+                        <div
+                            className="pointer-events-none absolute -right-5 top-16 translate-z-20 animate-float rounded-xl glass px-3 py-2 text-xs font-medium text-zinc-200 shadow-xl"
+                            style={{ animationDelay: "-3s" }}
+                        >
+                            <Zap size={13} className="mr-1 inline text-amber-400" /> Deployed
+                        </div>
+                        <div
+                            className="pointer-events-none absolute -bottom-4 right-1/4 translate-z-20 animate-float rounded-xl glass px-3 py-2 text-xs font-medium text-zinc-200 shadow-xl"
+                            style={{ animationDelay: "-5s" }}
+                        >
+                            <Palette size={13} className="mr-1 inline text-cyan-400" /> On-brand
+                        </div>
+                    </TiltCard>
+                </motion.div>
             </section>
 
-            {/* Highlights Section */}
-            {!userData && (
-                <section className='max-w-7xl mx-auto px-6 pb-32'>
-                    <div className='grid grid-cols-1 md:grid-cols-3 gap-12'>
-                        {highlights.map((h, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: '-60px' }}
-                                transition={{ duration: 0.75, delay: i * 0.1 }}
-                                className="relative rounded-2xl bg-white/5 border border-white/10 p-8 overflow-hidden"
-                            >
-                                <div className={`absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r ${cardAccents[i]}`} />
-                                <h1 className='text-xl font-semibold mb-3'>{h}</h1>
-                                <p className='text-sm text-zinc-600 leading-relaxed'>
-                                    Koda.AI harnesses the power of artificial intelligence to generate website designs and layouts. Whether you're a developer looking for coding assistance or a designer seeking inspiration, Koda.AI has got you covered.
-                                </p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </section>
-            )}
+            {/* ============================= STATS ============================= */}
+            <section className="mx-auto max-w-5xl px-6 pb-24">
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                    {STATS.map((s, i) => (
+                        <motion.div
+                            key={s.label}
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: i * 0.08 }}
+                            className="rounded-2xl glass px-4 py-6 text-center"
+                        >
+                            <div className="font-[var(--font-display)] text-3xl font-bold text-gradient">
+                                {s.value}
+                            </div>
+                            <div className="mt-1 text-xs uppercase tracking-widest text-zinc-500">
+                                {s.label}
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
 
-            {/* Websites Section */}
-            {userData && websites?.length > 0 && (
-                <section className='max-w-7xl mx-auto px-6 pb-32'>
-                    <h3 className='text-2xl font-semibold mb-6'>Your Websites</h3>
-                    <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                        {websites.slice(0, 3).map((w) => (
-                            <motion.div
-                                key={w._id}
-                                whileHover={{ y: -6 }}
-                                onClick={() => navigate(`/editor/${w._id}`)}
-                                className="cursor-pointer rounded-2xl bg-white/5 border border-white/10 overflow-hidden hover:border-white/20 transition-colors"
+            {/* ============================= FEATURES ============================= */}
+            <section className="mx-auto max-w-6xl px-6 pb-28">
+                <SectionHeading
+                    eyebrow="Why KODA"
+                    title="Everything you need to ship"
+                    subtitle="A complete AI design studio — from idea to live website, beautifully."
+                />
+                <div className="perspective-2000 grid grid-cols-1 gap-6 md:grid-cols-3">
+                    {FEATURES.map((f, i) => (
+                        <motion.div
+                            key={f.title}
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-60px" }}
+                            transition={{ duration: 0.6, delay: i * 0.1 }}
+                        >
+                            <TiltCard
+                                intensity={12}
+                                className="group h-full overflow-hidden rounded-3xl glass p-8"
                             >
-                                <div className='h-40 bg-black'>
+                                <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${f.accent}`} />
+                                <div
+                                    className={`mb-5 grid h-12 w-12 translate-z-10 place-items-center rounded-2xl bg-gradient-to-br ${f.accent} shadow-lg`}
+                                >
+                                    <f.icon size={22} className="text-white" />
+                                </div>
+                                <h3 className="mb-2 translate-z-10 text-xl font-semibold">{f.title}</h3>
+                                <p className="translate-z-10 text-sm leading-relaxed text-zinc-400">
+                                    {f.desc}
+                                </p>
+                            </TiltCard>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+
+            {/* ============================= HOW IT WORKS ============================= */}
+            <section className="mx-auto max-w-5xl px-6 pb-28">
+                <SectionHeading
+                    eyebrow="How it works"
+                    title="From prompt to production in 3 steps"
+                />
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                    {STEPS.map((s, i) => (
+                        <motion.div
+                            key={s.title}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: i * 0.12 }}
+                            className="relative rounded-3xl glass p-7"
+                        >
+                            <span className="absolute right-6 top-5 font-[var(--font-display)] text-5xl font-bold text-white/5">
+                                0{i + 1}
+                            </span>
+                            <div className="mb-4 grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/5">
+                                <s.icon size={20} className="text-violet-400" />
+                            </div>
+                            <h3 className="mb-1.5 text-lg font-semibold">{s.title}</h3>
+                            <p className="text-sm text-zinc-400">{s.desc}</p>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
+
+            {/* ============================= YOUR WEBSITES ============================= */}
+            {userData && websites?.length > 0 && (
+                <section className="mx-auto max-w-6xl px-6 pb-28">
+                    <div className="mb-8 flex items-end justify-between">
+                        <h2 className="font-[var(--font-display)] text-2xl font-bold">Your websites</h2>
+                        <button
+                            onClick={() => navigate("/dashboard")}
+                            className="text-sm text-violet-400 transition hover:text-violet-300"
+                        >
+                            View all →
+                        </button>
+                    </div>
+                    <div className="perspective-2000 grid grid-cols-1 gap-6 md:grid-cols-3">
+                        {websites.slice(0, 3).map((w) => (
+                            <TiltCard
+                                key={w._id}
+                                intensity={9}
+                                onClick={() => navigate(`/editor/${w._id}`)}
+                                className="group cursor-pointer overflow-hidden rounded-2xl glass"
+                            >
+                                <div className="h-40 overflow-hidden bg-black">
                                     <iframe
                                         srcDoc={w.latestCode}
-                                        className='w-[140%] h-[140%] scale-[0.72] origin-top-left pointer-events-none bg-white'
+                                        title={w.title}
+                                        className="pointer-events-none h-[140%] w-[140%] origin-top-left scale-[0.72] bg-white"
                                     />
                                 </div>
-                                <div className='p-4'>
-                                    <h3 className='text-base font-semibold line-clamp-2'>{w.title}</h3>
-                                    <p className='text-xs text-zinc-400'>Last Updated {new Date(w.updatedAt).toLocaleDateString()}</p>
+                                <div className="p-4">
+                                    <h3 className="line-clamp-1 text-base font-semibold">{w.title}</h3>
+                                    <p className="text-xs text-zinc-500">
+                                        Updated {new Date(w.updatedAt).toLocaleDateString()}
+                                    </p>
                                 </div>
-                            </motion.div>
+                            </TiltCard>
                         ))}
                     </div>
                 </section>
             )}
 
-            {/* Footer */}
-            <footer className='relative text-center text-sm text-zinc-500 py-6 border-t border-white/10'>
-                <div className='absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent' />
-                &copy; {new Date().getFullYear()} KODA.AI | All rights reserved.<br />
-                <span className='bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent'>Made with ❤️ by IITians</span>
+            {/* ============================= CTA BAND ============================= */}
+            <section className="mx-auto max-w-5xl px-6 pb-28">
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    className="relative overflow-hidden rounded-[2rem] glass-strong px-8 py-16 text-center"
+                >
+                    <div className="absolute -top-24 left-1/2 h-64 w-[36rem] -translate-x-1/2 rounded-full bg-violet-600/30 blur-[100px]" />
+                    <div className="relative">
+                        <h2 className="mx-auto max-w-2xl font-[var(--font-display)] text-3xl font-bold md:text-4xl">
+                            Ready to build something{" "}
+                            <span className="text-gradient">extraordinary</span>?
+                        </h2>
+                        <p className="mx-auto mt-4 max-w-lg text-zinc-400">
+                            Join thousands of creators turning prompts into production websites.
+                        </p>
+                        <div className="mt-8 flex justify-center">
+                            <MagneticButton onClick={handleCTA} className="px-9 py-4 text-base">
+                                {userData ? "Go to Dashboard" : "Get started — it's free"}
+                                <ArrowRight size={18} />
+                            </MagneticButton>
+                        </div>
+                    </div>
+                </motion.div>
+            </section>
+
+            {/* ============================= FOOTER ============================= */}
+            <footer className="relative border-t border-white/10 py-10 text-center text-sm text-zinc-500">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
+                <div className="mb-2 flex items-center justify-center gap-2">
+                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400">
+                        <Sparkles size={13} className="text-white" />
+                    </span>
+                    <span className="font-semibold text-white">KODA.AI</span>
+                </div>
+                © {new Date().getFullYear()} KODA.AI — All rights reserved.
+                <br />
+                <span className="text-gradient-violet">Made with ❤️ by IITians</span>
             </footer>
 
-            <style>{`
-                @keyframes shimmer {
-                    0% { background-position: -200% center; }
-                    100% { background-position: 200% center; }
-                }
-                @keyframes pulse-glow {
-                    0%, 100% { box-shadow: 0 0 20px 2px rgba(139,92,246,0.35), 0 0 60px 10px rgba(236,72,153,0.15); }
-                    50% { box-shadow: 0 0 30px 6px rgba(139,92,246,0.55), 0 0 80px 20px rgba(236,72,153,0.25); }
-                }
-                @keyframes orbit {
-                    from { transform: rotate(0deg) translateX(22px) rotate(0deg); }
-                    to   { transform: rotate(360deg) translateX(22px) rotate(-360deg); }
-                }
-                .model-switcher { animation: pulse-glow 3s ease-in-out infinite; }
-                .shimmer-btn {
-                    background: linear-gradient(110deg, #7c3aed 0%, #a855f7 30%, #f0abfc 50%, #a855f7 70%, #7c3aed 100%);
-                    background-size: 200% auto;
-                    animation: shimmer 2.5s linear infinite;
-                }
-                .shimmer-btn:hover { filter: brightness(1.15) saturate(1.2); }
-                .dot-pulse { animation: pulse-glow 2s ease-in-out infinite; }
-            `}</style>
-
+            {/* ============================= MODEL BANNER ============================= */}
             <AnimatePresence>
                 {!dismissBanner && (
                     <motion.div
                         initial={{ y: 100, opacity: 0, scale: 0.9 }}
                         animate={{ y: 0, opacity: 1, scale: 1 }}
                         exit={{ y: 100, opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.5, delay: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                        className="model-switcher fixed bottom-7 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-4 px-2 py-2 pr-3 rounded-2xl whitespace-nowrap"
-                        style={{
-                            background: 'linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)',
-                            backdropFilter: 'blur(24px)',
-                            WebkitBackdropFilter: 'blur(24px)',
-                            border: '1px solid rgba(255,255,255,0.12)',
-                            borderTop: '1px solid rgba(255,255,255,0.22)',
-                        }}
+                        transition={{ duration: 0.5, delay: 1, ease: [0.22, 1, 0.36, 1] }}
+                        className="glass-strong animate-glow fixed bottom-6 left-1/2 z-[9999] flex -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-2xl px-3 py-2.5"
                     >
-                        <div
-                            className="relative flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center"
-                            style={{ background: 'linear-gradient(135deg, #7c3aed, #ec4899)', boxShadow: '0 0 16px 4px rgba(139,92,246,0.5)' }}
-                        >
-                            <span className="text-base">🤖</span>
+                        <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl bg-gradient-to-br from-violet-600 to-pink-500 shadow-[0_0_16px_4px_rgba(139,92,246,0.5)]">
+                            <Sparkles size={16} className="text-white" />
                         </div>
-                        <div className="flex flex-col leading-tight">
-                            <span className="text-[11px] font-medium text-white/50 hidden sm:block tracking-wide uppercase">New</span>
-                            <span className="text-sm font-semibold text-white hidden sm:block">Try Another Model</span>
+                        <div className="hidden flex-col leading-tight sm:flex">
+                            <span className="text-[10px] uppercase tracking-widest text-white/50">New</span>
+                            <span className="text-sm font-semibold">Try another model</span>
                         </div>
-                        <button
+                        <MagneticButton
                             onClick={() => window.open("https://koda-ai-client.onrender.com/", "_blank")}
-                            className="shimmer-btn text-xs font-bold px-4 py-2 rounded-xl text-white cursor-pointer tracking-wide"
+                            className="px-4 py-2 text-xs"
+                            strength={0.25}
                         >
-                            Switch Now ⚡
-                        </button>
+                            Switch now <Zap size={13} />
+                        </MagneticButton>
                         <button
                             onClick={() => setDismissBanner(true)}
-                            className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-white/30 hover:text-white hover:bg-white/10 transition-all duration-200 cursor-pointer text-xs"
+                            className="grid h-6 w-6 flex-shrink-0 place-items-center rounded-full text-xs text-white/40 transition hover:bg-white/10 hover:text-white"
                         >
                             ✕
                         </button>
@@ -368,6 +433,18 @@ function Home() {
             </AnimatePresence>
 
             {openLogin && <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />}
+        </div>
+    )
+}
+
+function SectionHeading({ eyebrow, title, subtitle }) {
+    return (
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+            <span className="inline-block rounded-full glass px-3 py-1 text-xs uppercase tracking-widest text-violet-300">
+                {eyebrow}
+            </span>
+            <h2 className="mt-4 font-[var(--font-display)] text-3xl font-bold md:text-4xl">{title}</h2>
+            {subtitle && <p className="mt-3 text-zinc-400">{subtitle}</p>}
         </div>
     )
 }
