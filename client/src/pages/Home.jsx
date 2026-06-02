@@ -395,7 +395,6 @@ function Home() {
                 </div>
                 © {new Date().getFullYear()} KODA.AI — All rights reserved.
                 <br />
-                <span className="text-gradient-violet">Made with ❤️ by IITians</span>
             </footer>
 
             {openLogin && <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />}
