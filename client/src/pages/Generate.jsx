@@ -7,6 +7,7 @@ import { useSelector } from "react-redux"
 import { serverUrl } from "../App"
 import Aurora from "../components/ui/Aurora"
 import MagneticButton from "../components/ui/MagneticButton"
+import Logo from "../components/ui/Logo"
 
 const PHASES = [
     "Analyzing your idea…",
@@ -90,6 +91,7 @@ function Generate() {
                     >
                         <ArrowLeft size={16} />
                     </button>
+                    <Logo size={30} />
                     <h1 className="font-[var(--font-display)] text-lg font-bold">
                         KODA<span className="text-gradient-violet">.AI</span>
                     </h1>

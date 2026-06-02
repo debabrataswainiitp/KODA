@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import Editor from "@monaco-editor/react"
+import Logo from "../components/ui/Logo"
 
 const THINKING_STEPS = [
     "Understanding your request…",
@@ -31,25 +32,23 @@ const THINKING_STEPS = [
 /* Header used by both the desktop sidebar and the mobile chat overlay. */
 function EditorHeader({ title, onClose, onBack }) {
     return (
-        <div className="flex h-14 items-center justify-between border-b border-white/10 px-4">
-            <div className="flex items-center gap-2.5">
+        <div className="flex h-14 items-center justify-between gap-2 border-b border-white/10 px-4">
+            <div className="flex min-w-0 items-center gap-2.5">
                 {onBack && (
                     <button
                         onClick={onBack}
-                        className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 bg-white/5 transition hover:bg-white/10"
+                        className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-lg border border-white/10 bg-white/5 transition hover:bg-white/10"
                     >
                         <ArrowLeft size={15} />
                     </button>
                 )}
-                <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400">
-                    <Sparkles size={13} className="text-white" />
-                </span>
-                <span className="truncate font-semibold">{title}</span>
+                <Logo size={28} className="flex-shrink-0" />
+                <span className="truncate font-semibold" title={title}>{title}</span>
             </div>
             {onClose && (
                 <button
                     onClick={onClose}
-                    className="grid h-8 w-8 place-items-center rounded-lg transition hover:bg-white/10"
+                    className="grid h-8 w-8 flex-shrink-0 place-items-center rounded-lg transition hover:bg-white/10"
                 >
                     <X size={17} className="text-red-400" />
                 </button>
@@ -144,6 +143,10 @@ function WebsiteEditor() {
             setUpdateLoading(false)
             setMessages((m) => [...m, { role: "ai", content: result.data.message }])
             setCode(result.data.code)
+            // Keep the header title in sync with each iteration when the API returns one.
+            if (result.data.title) {
+                setWebsite((w) => (w ? { ...w, title: result.data.title } : w))
+            }
         } catch (error) {
             setUpdateLoading(false)
             console.log(error)

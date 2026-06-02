@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "motion/react"
-import { Coins, LayoutDashboard, LogOut, Sparkles, Zap } from "lucide-react"
+import { Coins, LayoutDashboard, LogOut, Zap } from "lucide-react"
+import Logo from "./Logo"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
@@ -70,9 +71,8 @@ function Navbar({ onGetStarted }) {
                     onClick={() => navigate("/")}
                     className="group flex items-center gap-2.5"
                 >
-                    <span className="relative grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-400 shadow-[0_6px_20px_-4px_rgba(139,92,246,0.7)] transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:rotate-6">
-                        <Sparkles size={17} className="text-white" />
-                        <span className="absolute inset-0 rounded-xl bg-white/20 opacity-0 blur-md transition-opacity group-hover:opacity-100" />
+                    <span className="transition-transform duration-300 group-hover:-translate-y-0.5">
+                        <Logo size={36} />
                     </span>
                     <span className="text-lg font-bold tracking-tight font-[var(--font-display)]">
                         KODA<span className="text-gradient-violet">.AI</span>
