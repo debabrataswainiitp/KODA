@@ -1,7 +1,8 @@
 import React from "react"
 import { AnimatePresence, motion } from "motion/react"
 import { signInWithPopup } from "firebase/auth"
-import { Sparkles, X } from "lucide-react"
+import { X } from "lucide-react"
+import Logo from "./ui/Logo"
 import { auth, provider } from "../firebase"
 import axios from "axios"
 import { serverUrl } from "../App"
@@ -70,10 +71,9 @@ function LoginModal({ open, onClose }) {
                             </button>
 
                             <div className="relative px-8 pb-10 pt-12 text-center">
-                                <div className="mx-auto mb-6 grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-400 shadow-[0_8px_30px_-6px_rgba(139,92,246,0.7)]">
-                                    <Sparkles size={24} className="text-white" />
+                                <div className="mx-auto mb-6 flex w-fit justify-center drop-shadow-[0_8px_24px_rgba(139,92,246,0.5)]">
+                                    <Logo size={56} />
                                 </div>
-
                                 <span className="mb-5 inline-block rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-zinc-300">
                                     AI-powered website builder by IITians
                                 </span>

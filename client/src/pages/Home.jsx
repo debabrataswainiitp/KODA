@@ -21,6 +21,7 @@ import Aurora from "../components/ui/Aurora"
 import Navbar from "../components/ui/Navbar"
 import TiltCard from "../components/ui/TiltCard"
 import MagneticButton from "../components/ui/MagneticButton"
+import Logo from "../components/ui/Logo"
 
 const ROTATING = ["websites", "landing pages", "portfolios", "dashboards"]
 
@@ -60,7 +61,6 @@ const STATS = [
 
 function Home() {
     const [openLogin, setOpenLogin] = useState(false)
-    const [dismissBanner, setDismissBanner] = useState(false)
     const [wordIndex, setWordIndex] = useState(0)
     const [websites, setWebsites] = useState(null)
     const { userData } = useSelector((state) => state.user)
@@ -113,25 +113,27 @@ function Home() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.05 }}
-                    className="mx-auto mt-7 max-w-4xl font-[var(--font-display)] text-5xl font-bold leading-[1.05] tracking-tight md:text-7xl"
+                    className="mx-auto mt-7 max-w-5xl font-[var(--font-display)] text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl xl:max-w-6xl xl:text-7xl"
                 >
-                    Build stunning{" "}
-                    <span className="relative inline-grid">
-                        <AnimatePresence mode="wait">
-                            <motion.span
-                                key={wordIndex}
-                                initial={{ y: "0.6em", opacity: 0, rotateX: -40 }}
-                                animate={{ y: 0, opacity: 1, rotateX: 0 }}
-                                exit={{ y: "-0.6em", opacity: 0, rotateX: 40 }}
-                                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                                className="text-gradient [grid-area:1/1]"
-                            >
-                                {ROTATING[wordIndex]}
-                            </motion.span>
-                        </AnimatePresence>
+                    <span className="block lg:whitespace-nowrap">
+                        Build stunning{" "}
+                        <span className="relative inline-grid text-left align-baseline">
+                            <AnimatePresence mode="wait">
+                                <motion.span
+                                    key={wordIndex}
+                                    initial={{ y: "0.6em", opacity: 0, rotateX: -40 }}
+                                    animate={{ y: 0, opacity: 1, rotateX: 0 }}
+                                    exit={{ y: "-0.6em", opacity: 0, rotateX: 40 }}
+                                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                                    className="text-gradient [grid-area:1/1] pb-[0.12em]"
+                                >
+                                    {ROTATING[wordIndex]}
+                                </motion.span>
+                            </AnimatePresence>
+                        </span>
                     </span>
-                    <br />
-                    with just a prompt
+                    <span className="block">with just a prompt</span>
+
                 </motion.h1>
 
                 <motion.p
@@ -388,49 +390,13 @@ function Home() {
             <footer className="relative border-t border-white/10 py-10 text-center text-sm text-zinc-500">
                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
                 <div className="mb-2 flex items-center justify-center gap-2">
-                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400">
-                        <Sparkles size={13} className="text-white" />
-                    </span>
-                    <span className="font-semibold text-white">KODA.AI</span>
+                    <Logo size={22} />
+                    <span className="font-[var(--font-display)] text-base font-bold text-gradient-violet">KODA.AI</span>
                 </div>
                 © {new Date().getFullYear()} KODA.AI — All rights reserved.
                 <br />
                 <span className="text-gradient-violet">Made with ❤️ by IITians</span>
             </footer>
-
-            {/* ============================= MODEL BANNER ============================= */}
-            <AnimatePresence>
-                {!dismissBanner && (
-                    <motion.div
-                        initial={{ y: 100, opacity: 0, scale: 0.9 }}
-                        animate={{ y: 0, opacity: 1, scale: 1 }}
-                        exit={{ y: 100, opacity: 0, scale: 0.9 }}
-                        transition={{ duration: 0.5, delay: 1, ease: [0.22, 1, 0.36, 1] }}
-                        className="glass-strong animate-glow fixed bottom-6 left-1/2 z-[9999] flex -translate-x-1/2 items-center gap-3 whitespace-nowrap rounded-2xl px-3 py-2.5"
-                    >
-                        <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-xl bg-gradient-to-br from-violet-600 to-pink-500 shadow-[0_0_16px_4px_rgba(139,92,246,0.5)]">
-                            <Sparkles size={16} className="text-white" />
-                        </div>
-                        <div className="hidden flex-col leading-tight sm:flex">
-                            <span className="text-[10px] uppercase tracking-widest text-white/50">New</span>
-                            <span className="text-sm font-semibold">Try another model</span>
-                        </div>
-                        <MagneticButton
-                            onClick={() => window.open("https://koda-ai-client.onrender.com/", "_blank")}
-                            className="px-4 py-2 text-xs"
-                            strength={0.25}
-                        >
-                            Switch now <Zap size={13} />
-                        </MagneticButton>
-                        <button
-                            onClick={() => setDismissBanner(true)}
-                            className="grid h-6 w-6 flex-shrink-0 place-items-center rounded-full text-xs text-white/40 transition hover:bg-white/10 hover:text-white"
-                        >
-                            ✕
-                        </button>
-                    </motion.div>
-                )}
-            </AnimatePresence>
 
             {openLogin && <LoginModal open={openLogin} onClose={() => setOpenLogin(false)} />}
         </div>
