@@ -1,0 +1,79 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ claude/great-ptolemy-fuJjq ]
+    paths:
+      - 'client/**'
+      - '.github/workflows/android-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK packages
+        run: |
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Install JS dependencies
+        working-directory: client
+        run: npm ci
+
+      - name: Build web app + sync Capacitor
+        working-directory: client
+        run: |
+          npm run build
+          npx cap sync android
+
+      - name: Build debug APK
+        working-directory: client/android
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Stage APK
+        run: cp client/android/app/build/outputs/apk/debug/app-debug.apk KODA-debug.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KODA-debug-apk
+          path: KODA-debug.apk
+          if-no-files-found: error
+
+      - name: Publish APK to a Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: android-apk
+          name: KODA.AI Android APK (debug)
+          body: |
+            Debug-signed Android APK of KODA.AI, built from the latest commit on
+            `claude/great-ptolemy-fuJjq`. Download `KODA-debug.apk` below.
+
+            To install: on your phone enable **Settings ▸ Apps ▸ Special access ▸
+            Install unknown apps** for your browser/file manager, then open the APK.
+
+            Note: this is a *debug* build for testing/sideloading. For the Amazon
+            Appstore or Google Play, produce a release build signed with your own
+            keystore (see `client/PUBLISHING.md`).
+          files: KODA-debug.apk
+          prerelease: true
+          fail_on_unmatched_files: true
