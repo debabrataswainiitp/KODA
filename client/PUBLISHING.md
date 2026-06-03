@@ -1,110 +1,117 @@
-# KODA.AI — App version & publishing guide
+# KODA.AI — App version, native build & publishing
 
-KODA is now an **installable app (PWA)**. This document explains what that means,
-how to install it for free, and every path to getting it onto an app store —
-including an honest note on cost.
+KODA ships in two app forms:
 
----
+1. **PWA** — installs from the browser, runs fullscreen. ($0)
+2. **Native Android app (Capacitor)** — a real APK/AAB that **bundles its own
+   copy of the app** (it does *not* just load the website in a webview), ready
+   for the **Amazon Appstore** (free) or **Google Play** ($25 one‑time).
 
-## TL;DR (the cost reality)
-
-| Path | Real store? | Cost | Who does it |
-|------|-------------|------|-------------|
-| **PWA install** (done ✅) | No (installs from browser) | **$0** | Anyone, now |
-| **Google Play** (TWA) | Yes | **$25 one‑time** (Google's fee) | You — needs your Play account |
-| **Amazon Appstore** | Yes | **$0** (free dev account) | You |
-| **Direct APK** (GitHub Releases / site) | No | **$0** | You |
-| **F‑Droid** | Yes | **$0** (open‑source only) | You + their review |
-
-> ⚠️ **There is no $0 route onto the *Google Play* store specifically.** Google
-> charges a one‑time **$25** developer‑registration fee. That fee, and the actual
-> upload, can only be done by you from your Play Console — I can't do it for you.
-> If "free" matters more than "Play specifically", use the **PWA** (already done)
-> or the **Amazon Appstore** (free), both below.
+The app icon (PWA + native launcher) is the project's **`vite.svg`** mark.
 
 ---
 
-## 1. What's already built (the app version) — $0
+## Cost reality
 
-The web app is now a Progressive Web App:
-- `vite-plugin-pwa` generates a **service worker** (offline app shell) + **web manifest**
-- App icons live in `client/public/` (`pwa-192x192.png`, `pwa-512x512.png`, `pwa-maskable-512x512.png`, `apple-touch-icon.png`)
-- Configured in `client/vite.config.js`; mobile meta tags in `client/index.html`
-- `display: standalone` → launches fullscreen with no browser chrome, like a native app
+| Target | Real store? | Cost |
+|--------|-------------|------|
+| **PWA install** (done ✅) | from browser | **$0** |
+| **Amazon Appstore** (done‑ready ✅) | ✅ | **$0** (free dev account) |
+| **Google Play** | ✅ | **$25 one‑time** (Google's fee) |
+| **Direct APK** (GitHub Releases) | — | **$0** |
 
-### Install it (no store, free)
-- **Android / Chrome:** open the deployed site → menu (⋮) → **Install app / Add to Home screen**. A KODA icon lands on the home screen and opens fullscreen.
-- **iOS / Safari:** Share → **Add to Home Screen**.
-- Desktop Chrome/Edge: an **install icon** appears in the address bar.
-
-> Requirement: the site must be served over **HTTPS**. Your Render deployment already is — just deploy this branch and the install prompt appears automatically.
+> Google Play has a mandatory one‑time **$25** fee and the upload must be done
+> from your own Play Console — I can't do that part. Amazon's store is free.
 
 ---
 
-## 2. Publish to Google Play (TWA via Bubblewrap)
+## 1. PWA (installable, $0)
 
-A **TWA** (Trusted Web Activity) wraps the PWA in a tiny native Android app. This
-is Google's recommended way to put a web app on Play, using the free, open‑source
-**Bubblewrap** CLI.
+Built with `vite-plugin-pwa` (`vite.config.js`): service worker + web manifest +
+icons in `client/public/`. Deploy the client over HTTPS and:
+- **Android/Chrome:** ⋮ → *Install app*  · **iOS/Safari:** Share → *Add to Home Screen*.
 
-**Prerequisites**
-1. The PWA deployed at a stable HTTPS URL (e.g. `https://your-koda-site.com`).
-2. A **Google Play Developer account** — **$25 one‑time** (https://play.google.com/console/signup).
-3. JDK 17 + Android SDK (Bubblewrap can install these for you).
+---
 
-**Steps**
+## 2. Native Android app (Capacitor) — bundled, works on its own
+
+Capacitor is configured in `client/capacitor.config.json` with `webDir: dist`
+and **no `server.url`**, so the built app is packaged *inside* the APK
+(`android/app/src/main/assets/public`) and runs locally — not fetched from the web.
+
+```bash
+cd client
+npm install
+npm run app:sync     # vite build  +  cap sync android  (refresh bundled app)
+npm run app:open     # open the project in Android Studio
+```
+
+**Build an installable file** (needs Android Studio / Android SDK + JDK 17):
+- In Android Studio: **Build ▸ Generate Signed Bundle / APK**
+  - **APK** → best for Amazon Appstore & direct distribution
+  - **AAB** → required by Google Play
+- Or via CLI:
+  ```bash
+  cd android
+  ./gradlew assembleRelease     # → app/build/outputs/apk/release/*.apk
+  ./gradlew bundleRelease       # → app/build/outputs/bundle/release/*.aab
+  ```
+
+**Signing:** the Android Studio wizard creates a keystore the first time — **back
+it up** (you can't update the app later without it).
+
+**Re‑skin the launcher icon:** sources live in `client/assets/`
+(`icon-foreground.png`, `icon-background.png`, `icon-only.png`, `splash*.png`).
+Edit them, then `npm run app:icons` to regenerate all Android densities.
+
+---
+
+## 3. Publish to the Amazon Appstore (free)
+
+1. Create a free developer account: https://developer.amazon.com/apps-and-games
+2. **Add New App ▸ Android** → fill title, description, screenshots, and the
+   512px icon (`client/public/pwa-512x512.png`).
+3. Upload the **APK** (or AAB) from step 2.
+4. Set content rating + privacy policy URL → **Submit**. No fee.
+
+## 4. Publish to Google Play ($25 one‑time)
+
+Either upload the Capacitor **AAB** above, or wrap the PWA as a TWA:
 ```bash
 npm i -g @bubblewrap/cli
-
-# scaffold from the live manifest
 bubblewrap init --manifest https://your-koda-site.com/manifest.webmanifest
-
-# build the release bundle (signs it; keep the keystore safe!)
-bubblewrap build
-# → produces app-release-bundle.aab  (upload this to Play)
+bubblewrap build      # → app-release-bundle.aab
 ```
-
-**Verify the link (Digital Asset Links)** so the app opens with no browser UI:
-host the file Bubblewrap prints at
-`https://your-koda-site.com/.well-known/assetlinks.json`.
-
-**Then in the Play Console:** create an app → upload the `.aab` → fill the store
-listing (title, description, screenshots, the 512 icon in `public/`), content
-rating, data‑safety form, and a **privacy policy URL** → roll out to testing →
-production. Review usually takes a few hours to a couple of days.
+Then in the Play Console (after the $25 signup): create app → upload the AAB →
+listing, content rating, data‑safety, privacy policy → roll out.
 
 ---
 
-## 3. 100% free alternatives
+## 5. Backend connectivity in the native app (important)
 
-### a) Amazon Appstore — a real store, free account
-- Sign up free: https://developer.amazon.com/apps-and-games
-- Amazon accepts the **same AAB/APK** Bubblewrap (or Capacitor) produces, and even has a web‑app/PWA submission flow. No yearly or signup fee.
+The native app's UI runs locally, but login/generation still call the live API
+(`https://koda-b.onrender.com`). For that to work from the app's `https://localhost`
+origin:
 
-### b) Direct APK distribution — free
-- Build an APK (`bubblewrap build` or Capacitor), attach it to a **GitHub Release** or host it on your site, and share the link. Users enable "install from unknown sources".
+- **CORS** — already handled: `server/index.js` now allows the Capacitor origins
+  (`https://localhost`, `capacitor://localhost`) alongside the web origin.
+  **Redeploy the server** for this to take effect.
+- **Cookies** — KODA uses cookie auth (`withCredentials`). For cookies to flow
+  cross‑site into the WebView, the auth cookie must be set
+  `SameSite=None; Secure` on the backend. (Today it isn't, so login won't persist
+  in the native app until that's changed.)
+- **Google sign‑in** — `signInWithPopup` does **not** work inside an Android
+  WebView. The native app needs redirect‑based auth or a native plugin
+  (e.g. `@codetrix-studio/capacitor-google-auth`).
 
-### c) F‑Droid — free, open‑source store
-- Free to list, but the app must be FOSS and go through their build/review process. Good if you open‑source KODA.
-
----
-
-## 4. Optional: native wrapper with Capacitor
-
-If you later need **native device APIs** (camera, push, biometrics), wrap the
-build with Capacitor instead of a TWA:
-```bash
-npm i @capacitor/core @capacitor/cli @capacitor/android
-npx cap init "KODA.AI" "ai.koda.app" --web-dir dist
-npm run build && npx cap add android && npx cap sync
-npx cap open android   # build the AAB/APK in Android Studio
-```
-The same AAB then goes to Play ($25) or Amazon (free).
+> Want me to wire up the cookie change + native Google auth so login works fully
+> inside the packaged app? Say the word and I'll implement it.
 
 ---
 
-## 5. Notes & gotchas
-- **Backend/auth:** KODA's cookie auth (`withCredentials`) works in a TWA because a TWA runs the real site in Chrome (same cookies). A Capacitor wrapper uses a `https://localhost` origin, so set the backend CORS + cookie `SameSite=None; Secure` accordingly.
-- **Keystore:** back up the signing keystore Bubblewrap/Capacitor generates — losing it means you can't update the app.
-- **Icons:** swap any `client/public/pwa-*.png` to rebrand the launcher icon; re‑deploy.
-- **HTTPS is mandatory** for install, service workers and TWAs.
+## What I committed
+- `client/vite.config.js`, `client/index.html` — PWA (manifest, SW, meta)
+- `client/public/*.png` — app icons (the `vite.svg` mark on a dark tile)
+- `client/capacitor.config.json`, `client/android/**`, `client/assets/**` — native app
+- `client/package.json` — `app:sync` / `app:open` / `app:icons` scripts
+- `server/index.js` — CORS allowlist incl. Capacitor origins

@@ -16,8 +16,17 @@ app.post("/api/stripe/webhook",express.raw({type:"application/json"}),stripeWebh
 const port=process.env.PORT || 5000
 app.use(express.json())
 app.use(cookieParser())
+// Allowed web + native (Capacitor) origins. Array form keeps credentialed CORS working per-origin.
+const allowedOrigins = [
+    "https://koda-ai-builder.onrender.com",
+    process.env.FRONTEND_URL,
+    "https://localhost",         // Capacitor Android (bundled app)
+    "capacitor://localhost",     // Capacitor iOS
+    "http://localhost:5173",     // Vite dev
+    "http://localhost:4173",     // Vite preview
+].filter(Boolean)
 app.use(cors({
-    origin:"https://koda-ai-builder.onrender.com",
+    origin: allowedOrigins,
     credentials:true
 }))
 app.use("/api/auth",authRouter)

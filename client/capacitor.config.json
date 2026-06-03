@@ -1,0 +1,8 @@
+{
+  "appId": "ai.koda.app",
+  "appName": "KODA.AI",
+  "webDir": "dist",
+  "android": {
+    "backgroundColor": "#050507"
+  }
+}
