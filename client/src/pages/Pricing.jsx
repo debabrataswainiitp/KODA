@@ -16,11 +16,12 @@ const plans = [
         price: "₹0",
         credits: 100,
         description: "Perfect to explore Koda.ai",
+        glowColor: 'hover:shadow-cyan-500/10',
         features: [
             "AI website generation",
             "Responsive HTML output",
             "Basic animations",
-            "Max 2 website generations",
+            "Upto 2 Projects",
         ],
         popular: false,
         button: "Get Started",
@@ -31,6 +32,7 @@ const plans = [
         price: "₹249",
         credits: 500,
         description: "For serious creators & freelancers",
+        glowColor: 'hover:shadow-violet-500/20',
         features: [
             "Everything in Free",
             "Faster generation",
@@ -48,6 +50,7 @@ const plans = [
         price: "₹999",
         credits: 2200,
         description: "For teams & enterprise users",
+        glowColor: 'hover:shadow-amber-500/10',
         features: [
             "Unlimited iterations",
             "Highest priority access",
@@ -88,10 +91,17 @@ function Pricing() {
             setLoading(null)
         }
     }
-
+// 
     return (
-        <div className="relative min-h-screen bg-koda-bg px-6 pt-8 pb-24 text-white">
+        <div className='relative min-h-screen bg-[#040404] text-white overflow-hidden px-4 sm:px-6 pt-8 pb-24'>
             <Aurora />
+          {/* ambient */}
+          <div className='absolute -top-40 -left-20 w-[700px] h-[700px] rounded-full bg-violet-600/8 blur-[140px] pointer-events-none' />
+          <div className='absolute top-[50vh] -right-20 w-[600px] h-[600px] rounded-full bg-pink-600/6 blur-[160px] pointer-events-none' />
+          <div className='absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-indigo-600/5 blur-[120px] pointer-events-none' />
+          {/* grid */}
+          <div className='absolute inset-0 opacity-[0.025] pointer-events-none'
+            style={{ backgroundImage: 'linear-gradient(to right, #a78bfa 1px, transparent 1px), linear-gradient(to bottom, #a78bfa 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
 
             <button
                 className="relative z-10 mb-10 flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-400 transition hover:bg-white/5 hover:text-white"
@@ -110,7 +120,10 @@ function Pricing() {
                     <Sparkles size={13} /> Simple, credit-based pricing
                 </span>
                 <h1 className="font-[var(--font-display)] text-4xl font-bold leading-tight md:text-5xl">
-                    Fuel your ideas with every <span className="text-gradient">credit</span>
+                    Fuel Your Ideas,<br />
+                    <span className='bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent'>
+                        With Every Credit.
+                    </span>
                 </h1>
                 <p className="mt-4 text-zinc-400">Buy credits once. Build anytime.</p>
             </motion.div>
@@ -176,6 +189,26 @@ function Pricing() {
                     </motion.div>
                 ))}
             </div>
+
+            <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className='relative z-10 max-w-lg mx-auto mt-16 text-center'
+                              >
+                <p className='text-zinc-700 text-sm'>
+                  One-time purchase · Credits never expire · Instant access after payment
+                </p>
+                <div className='flex items-center justify-center gap-8 mt-6'>
+                  {['Secure Payment', 'No Subscription', 'Instant Access'].map((t) => (
+                    <div key={t} className='flex items-center gap-1.5 text-[12px] text-zinc-600'>
+                      <Check size={12} className='text-emerald-500' />
+                      {t}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
         </div>
     )
 }
