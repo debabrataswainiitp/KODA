@@ -22,6 +22,7 @@ import Navbar from "../components/ui/Navbar"
 import TiltCard from "../components/ui/TiltCard"
 import MagneticButton from "../components/ui/MagneticButton"
 import Logo from "../components/ui/Logo"
+import { TextHoverEffect } from "../components/ui/text-hover-effect"
 
 const ROTATING = ["websites", "landing pages", "portfolios", "dashboards"]
 
@@ -109,11 +110,20 @@ function Home() {
                     AI-powered website builder
                 </motion.div>
 
-                <motion.h1
+                <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.05 }}
-                    className="mx-auto mt-7 max-w-5xl font-[var(--font-display)] text-4xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl xl:max-w-6xl xl:text-7xl"
+                    className="mt-7 w-full max-w-3xl mx-auto"
+                >
+                    <TextHoverEffect text="KODA.AI" />
+                </motion.div>
+
+                <motion.h2
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.1 }}
+                    className="mx-auto mt-2 max-w-5xl font-[var(--font-display)] text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl"
                 >
                     <span className="block lg:whitespace-nowrap">
                         Build stunning{" "}
@@ -133,8 +143,7 @@ function Home() {
                         </span>
                     </span>
                     <span className="block">with just a prompt</span>
-
-                </motion.h1>
+                </motion.h2>
 
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
