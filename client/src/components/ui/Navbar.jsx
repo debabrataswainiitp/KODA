@@ -65,7 +65,7 @@ function Navbar({ onGetStarted }) {
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-x-0 top-0 z-50 px-4 pt-4"
         >
-            <nav className="glass-dark mx-auto flex max-w-6xl items-center justify-between rounded-2xl px-5 py-3">
+            <nav className="glass-dark mx-auto flex w-full items-center justify-between rounded-2xl px-5 py-3">
                 {/* Logo */}
                 <button
                     onClick={() => navigate("/")}
@@ -73,7 +73,7 @@ function Navbar({ onGetStarted }) {
                 >
                     <Logo size={34} className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:rotate-6" />
                     <span className="text-lg font-bold tracking-tight font-[var(--font-display)]">
-                        <span className="text-gradient-violet">KODA.AI</span>
+                        <span className="text-gradient-violet">KODA AI</span>
                     </span>
                 </button>
 
