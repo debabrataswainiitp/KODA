@@ -94,35 +94,7 @@ function Home() {
 
     return (
         <div className="relative min-h-screen overflow-x-hidden bg-koda-bg text-white">
-            {/* ── RICHER BACKGROUND ── */}
-            {/* Base deep radial */}
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_130%_90%_at_50%_-15%,#1a1035_0%,#090912_50%,#050507_100%)]" />
-            {/* Large violet blob top-left */}
-            <div className="pointer-events-none fixed -top-32 -left-24 -z-10 h-[600px] w-[600px] rounded-full bg-violet-600/30 blur-[140px] animate-aurora" />
-            {/* Fuchsia blob top-right */}
-            <div
-                className="pointer-events-none fixed -top-16 right-[-8%] -z-10 h-[520px] w-[520px] rounded-full bg-fuchsia-600/25 blur-[130px] animate-aurora"
-                style={{ animationDelay: "-6s" }}
-            />
-            {/* Cyan mid-center */}
-            <div
-                className="pointer-events-none fixed top-[40%] left-1/2 -z-10 h-[600px] w-[760px] -translate-x-1/2 rounded-full bg-cyan-500/15 blur-[160px] animate-aurora"
-                style={{ animationDelay: "-11s" }}
-            />
-            {/* Blue bottom-left */}
-            <div className="pointer-events-none fixed bottom-[-10%] left-[10%] -z-10 h-[480px] w-[480px] rounded-full bg-blue-600/18 blur-[130px] animate-float-slow" />
-            {/* Purple bottom-right */}
-            <div
-                className="pointer-events-none fixed bottom-[5%] right-[8%] -z-10 h-[360px] w-[360px] rounded-full bg-purple-700/20 blur-[120px] animate-float-slow"
-                style={{ animationDelay: "-8s" }}
-            />
-            {/* Perspective grid */}
-            <div className="pointer-events-none fixed inset-0 -z-10 bg-grid bg-grid-fade opacity-50" />
-            {/* Film grain */}
-            <div className="pointer-events-none fixed inset-0 -z-10 noise opacity-[0.04] mix-blend-overlay" />
-            {/* Top vignette */}
-            <div className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-black/50 to-transparent" />
-
+            <Aurora />
             <Navbar onGetStarted={() => setOpenLogin(true)} />
 
             {/* ============================= HERO ============================= */}
@@ -145,7 +117,7 @@ function Home() {
                     transition={{ duration: 0.7, delay: 0.05 }}
                     className="mt-6 w-full max-w-4xl mx-auto"
                 >
-                    <TextHoverEffect text="KODA.AI" />
+                    <TextHoverEffect text="KODA AI" />
                 </motion.div>
 
                 {/* Tagline — big, bold, matching original energy */}
@@ -181,8 +153,8 @@ function Home() {
                     transition={{ duration: 0.7, delay: 0.15 }}
                     className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-zinc-400"
                 >
-                    KODA.AI is your creative companion for turning ideas into beautiful,
-                    responsive, deploy-ready websites — no code required.
+                    Turn your idea into a fully responsive, animated website in seconds.
+                    get deploy-ready websites with no code required.
                 </motion.p>
 
                 <motion.div
@@ -222,7 +194,7 @@ function Home() {
                             <span className="h-3 w-3 rounded-full bg-emerald-400/80" />
                             <div className="ml-3 flex flex-1 items-center gap-2 rounded-lg bg-black/40 px-3 py-1.5 text-xs text-zinc-500">
                                 <span className="h-2 w-2 rounded-full bg-emerald-400" />
-                                koda.ai/preview
+                                koda-ai-builder.onrender.com/dashboard
                             </div>
                         </div>
 
