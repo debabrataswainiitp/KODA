@@ -54,10 +54,10 @@ const STEPS = [
 ]
 
 const STATS = [
-    { value: "10k+", label: "Sites generated" },
+    { value: "100+", label: "Sites generated" },
     { value: "60s", label: "Avg. build time" },
-    { value: "99.9%", label: "Uptime" },
-    { value: "4.9/5", label: "Creator rating" },
+    { value: "98.9%", label: "Uptime" },
+    { value: "4.4/5", label: "User rating" },
 ]
 
 function Home() {
@@ -107,7 +107,7 @@ function Home() {
                 >
                     <span className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shine" />
                     <Sparkles size={13} className="text-violet-400" />
-                    AI-powered website builder
+                    AI Website Builder
                 </motion.div>
 
                 <motion.div
@@ -116,14 +116,14 @@ function Home() {
                     transition={{ duration: 0.7, delay: 0.05 }}
                     className="mt-7 w-full max-w-3xl mx-auto"
                 >
-                    <TextHoverEffect text="KODA.AI" />
+                    <TextHoverEffect text="KODA AI" />
                 </motion.div>
 
-                <motion.h2
+                <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.1 }}
-                    className="mx-auto mt-2 max-w-5xl font-[var(--font-display)] text-3xl font-bold leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl"
+                    className="mx-auto mt-2 max-w-5xl font-[var(--font-display)] text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl"
                 >
                     <span className="block lg:whitespace-nowrap">
                         Build stunning{" "}
@@ -143,7 +143,7 @@ function Home() {
                         </span>
                     </span>
                     <span className="block">with just a prompt</span>
-                </motion.h2>
+                </motion.h1>
 
                 <motion.p
                     initial={{ opacity: 0, y: 20 }}
@@ -151,8 +151,8 @@ function Home() {
                     transition={{ duration: 0.7, delay: 0.15 }}
                     className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-zinc-400"
                 >
-                    KODA.AI is your creative companion for turning ideas into beautiful,
-                    responsive, deploy-ready websites — no code required.
+                    Turn your idea into a fully responsive, animated website in seconds.
+                    Get deploy-ready websites with no code required.
                 </motion.p>
 
                 <motion.div
