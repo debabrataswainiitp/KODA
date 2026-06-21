@@ -54,10 +54,10 @@ const STEPS = [
 ]
 
 const STATS = [
-    { value: "100+", label: "Sites generated" },
+    { value: "10k+", label: "Sites generated" },
     { value: "60s", label: "Avg. build time" },
-    { value: "98.9%", label: "Uptime" },
-    { value: "4.4/5", label: "User rating" },
+    { value: "99.9%", label: "Uptime" },
+    { value: "4.9/5", label: "Creator rating" },
 ]
 
 function Home() {
@@ -94,11 +94,39 @@ function Home() {
 
     return (
         <div className="relative min-h-screen overflow-x-hidden bg-koda-bg text-white">
-            <Aurora />
+            {/* ── RICHER BACKGROUND ── */}
+            {/* Base deep radial */}
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_130%_90%_at_50%_-15%,#1a1035_0%,#090912_50%,#050507_100%)]" />
+            {/* Large violet blob top-left */}
+            <div className="pointer-events-none fixed -top-32 -left-24 -z-10 h-[600px] w-[600px] rounded-full bg-violet-600/30 blur-[140px] animate-aurora" />
+            {/* Fuchsia blob top-right */}
+            <div
+                className="pointer-events-none fixed -top-16 right-[-8%] -z-10 h-[520px] w-[520px] rounded-full bg-fuchsia-600/25 blur-[130px] animate-aurora"
+                style={{ animationDelay: "-6s" }}
+            />
+            {/* Cyan mid-center */}
+            <div
+                className="pointer-events-none fixed top-[40%] left-1/2 -z-10 h-[600px] w-[760px] -translate-x-1/2 rounded-full bg-cyan-500/15 blur-[160px] animate-aurora"
+                style={{ animationDelay: "-11s" }}
+            />
+            {/* Blue bottom-left */}
+            <div className="pointer-events-none fixed bottom-[-10%] left-[10%] -z-10 h-[480px] w-[480px] rounded-full bg-blue-600/18 blur-[130px] animate-float-slow" />
+            {/* Purple bottom-right */}
+            <div
+                className="pointer-events-none fixed bottom-[5%] right-[8%] -z-10 h-[360px] w-[360px] rounded-full bg-purple-700/20 blur-[120px] animate-float-slow"
+                style={{ animationDelay: "-8s" }}
+            />
+            {/* Perspective grid */}
+            <div className="pointer-events-none fixed inset-0 -z-10 bg-grid bg-grid-fade opacity-50" />
+            {/* Film grain */}
+            <div className="pointer-events-none fixed inset-0 -z-10 noise opacity-[0.04] mix-blend-overlay" />
+            {/* Top vignette */}
+            <div className="pointer-events-none fixed inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-black/50 to-transparent" />
+
             <Navbar onGetStarted={() => setOpenLogin(true)} />
 
             {/* ============================= HERO ============================= */}
-            <section className="relative mx-auto max-w-6xl px-6 pt-40 pb-24 text-center">
+            <section className="relative mx-auto max-w-7xl px-6 pt-40 pb-24 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -107,25 +135,27 @@ function Home() {
                 >
                     <span className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shine" />
                     <Sparkles size={13} className="text-violet-400" />
-                    AI Website Builder
+                    AI-powered website builder
                 </motion.div>
 
+                {/* TextHoverEffect — KODA.AI brand mark */}
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.05 }}
-                    className="mt-7 w-full max-w-3xl mx-auto"
+                    className="mt-6 w-full max-w-4xl mx-auto"
                 >
-                    <TextHoverEffect text="KODA AI" />
+                    <TextHoverEffect text="KODA.AI" />
                 </motion.div>
 
+                {/* Tagline — big, bold, matching original energy */}
                 <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.1 }}
-                    className="mx-auto mt-2 max-w-5xl font-[var(--font-display)] text-3xl font-extrabold leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl"
+                    className="mx-auto -mt-2 max-w-6xl font-[var(--font-display)] text-5xl font-extrabold leading-[1.08] tracking-[-0.03em] sm:text-6xl lg:text-7xl"
                 >
-                    <span className="block lg:whitespace-nowrap">
+                    <span className="block">
                         Build stunning{" "}
                         <span className="relative inline-grid text-left align-baseline">
                             <AnimatePresence mode="wait">
@@ -142,7 +172,7 @@ function Home() {
                             </AnimatePresence>
                         </span>
                     </span>
-                    <span className="block">with just a prompt</span>
+                    <span className="block text-white/90">with just a prompt</span>
                 </motion.h1>
 
                 <motion.p
@@ -151,8 +181,8 @@ function Home() {
                     transition={{ duration: 0.7, delay: 0.15 }}
                     className="mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-zinc-400"
                 >
-                    Turn your idea into a fully responsive, animated website in seconds.
-                    Get deploy-ready websites with no code required.
+                    KODA.AI is your creative companion for turning ideas into beautiful,
+                    responsive, deploy-ready websites — no code required.
                 </motion.p>
 
                 <motion.div
@@ -161,14 +191,14 @@ function Home() {
                     transition={{ duration: 0.7, delay: 0.25 }}
                     className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
                 >
-                    <MagneticButton onClick={handleCTA} className="px-8 py-4 text-base">
+                    <MagneticButton onClick={handleCTA} className="px-10 py-4 text-base">
                         {userData ? "Open Dashboard" : "Start building free"}
                         <ArrowRight size={18} />
                     </MagneticButton>
                     <MagneticButton
                         variant="glass"
                         onClick={() => navigate("/pricing")}
-                        className="px-8 py-4 text-base"
+                        className="px-10 py-4 text-base"
                     >
                         View pricing
                     </MagneticButton>
@@ -183,7 +213,7 @@ function Home() {
                 >
                     <TiltCard
                         intensity={8}
-                        className="group mx-auto max-w-4xl rounded-2xl glass-strong p-2 shadow-[0_40px_120px_-30px_rgba(124,58,237,0.55)]"
+                        className="group mx-auto max-w-5xl rounded-2xl glass-strong p-2 shadow-[0_40px_120px_-30px_rgba(124,58,237,0.55)]"
                     >
                         {/* browser chrome */}
                         <div className="flex items-center gap-2 px-3 py-2.5">
@@ -200,7 +230,6 @@ function Home() {
                         <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#0c0c16] to-[#0a0a12] p-8">
                             <div className="absolute -top-16 left-1/4 h-48 w-48 rounded-full bg-violet-600/30 blur-3xl" />
                             <div className="absolute -bottom-16 right-1/4 h-48 w-48 rounded-full bg-cyan-500/20 blur-3xl" />
-
                             <div className="relative translate-z-10">
                                 <div className="mx-auto mb-4 h-2.5 w-28 rounded-full bg-white/15" />
                                 <div className="mx-auto mb-3 h-8 w-3/4 rounded-lg bg-gradient-to-r from-violet-400/70 to-pink-400/70" />
@@ -211,10 +240,7 @@ function Home() {
                                 </div>
                                 <div className="mt-8 grid grid-cols-3 gap-3">
                                     {[0, 1, 2].map((i) => (
-                                        <div
-                                            key={i}
-                                            className="h-20 rounded-xl border border-white/10 bg-white/5"
-                                        />
+                                        <div key={i} className="h-20 rounded-xl border border-white/10 bg-white/5" />
                                     ))}
                                 </div>
                             </div>
@@ -241,7 +267,7 @@ function Home() {
             </section>
 
             {/* ============================= STATS ============================= */}
-            <section className="mx-auto max-w-5xl px-6 pb-24">
+            <section className="mx-auto max-w-6xl px-6 pb-24">
                 <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                     {STATS.map((s, i) => (
                         <motion.div
@@ -264,7 +290,7 @@ function Home() {
             </section>
 
             {/* ============================= FEATURES ============================= */}
-            <section className="mx-auto max-w-6xl px-6 pb-28">
+            <section className="mx-auto max-w-7xl px-6 pb-28">
                 <SectionHeading
                     eyebrow="Why KODA"
                     title="Everything you need to ship"
@@ -279,20 +305,13 @@ function Home() {
                             viewport={{ once: true, margin: "-60px" }}
                             transition={{ duration: 0.6, delay: i * 0.1 }}
                         >
-                            <TiltCard
-                                intensity={12}
-                                className="group h-full overflow-hidden rounded-3xl glass p-8"
-                            >
+                            <TiltCard intensity={12} className="group h-full overflow-hidden rounded-3xl glass p-8">
                                 <div className={`absolute inset-x-0 top-0 h-px bg-gradient-to-r ${f.accent}`} />
-                                <div
-                                    className={`mb-5 grid h-12 w-12 translate-z-10 place-items-center rounded-2xl bg-gradient-to-br ${f.accent} shadow-lg`}
-                                >
+                                <div className={`mb-5 grid h-12 w-12 translate-z-10 place-items-center rounded-2xl bg-gradient-to-br ${f.accent} shadow-lg`}>
                                     <f.icon size={22} className="text-white" />
                                 </div>
                                 <h3 className="mb-2 translate-z-10 text-xl font-semibold">{f.title}</h3>
-                                <p className="translate-z-10 text-sm leading-relaxed text-zinc-400">
-                                    {f.desc}
-                                </p>
+                                <p className="translate-z-10 text-sm leading-relaxed text-zinc-400">{f.desc}</p>
                             </TiltCard>
                         </motion.div>
                     ))}
@@ -300,7 +319,7 @@ function Home() {
             </section>
 
             {/* ============================= HOW IT WORKS ============================= */}
-            <section className="mx-auto max-w-5xl px-6 pb-28">
+            <section className="mx-auto max-w-6xl px-6 pb-28">
                 <SectionHeading
                     eyebrow="How it works"
                     title="From prompt to production in 3 steps"
@@ -330,7 +349,7 @@ function Home() {
 
             {/* ============================= YOUR WEBSITES ============================= */}
             {userData && websites?.length > 0 && (
-                <section className="mx-auto max-w-6xl px-6 pb-28">
+                <section className="mx-auto max-w-7xl px-6 pb-28">
                     <div className="mb-8 flex items-end justify-between">
                         <h2 className="font-[var(--font-display)] text-2xl font-bold">Your websites</h2>
                         <button
@@ -368,7 +387,7 @@ function Home() {
             )}
 
             {/* ============================= CTA BAND ============================= */}
-            <section className="mx-auto max-w-5xl px-6 pb-28">
+            <section className="mx-auto max-w-7xl px-6 pb-28">
                 <motion.div
                     initial={{ opacity: 0, scale: 0.96 }}
                     whileInView={{ opacity: 1, scale: 1 }}
