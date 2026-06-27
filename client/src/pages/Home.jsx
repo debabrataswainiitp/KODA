@@ -169,10 +169,10 @@ function Home() {
                     </MagneticButton>
                     <MagneticButton
                         variant="glass"
-                        onClick={() => navigate("/generate")}
+                        onClick={() => navigate("/pricing")}
                         className="px-10 py-4 text-base"
                     >
-                        Start Building
+                        View Pricing
                     </MagneticButton>
                 </motion.div>
 
