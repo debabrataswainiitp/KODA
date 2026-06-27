@@ -54,10 +54,10 @@ const STEPS = [
 ]
 
 const STATS = [
-    { value: "10k+", label: "Sites generated" },
+    { value: "100+", label: "Sites generated" },
     { value: "60s", label: "Avg. build time" },
-    { value: "99.9%", label: "Uptime" },
-    { value: "4.9/5", label: "Creator rating" },
+    { value: "98.8%", label: "Uptime" },
+    { value: "4.2/5", label: "User rating" },
 ]
 
 function Home() {
